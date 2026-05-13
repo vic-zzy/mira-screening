@@ -122,14 +122,21 @@ which inputs increase or decrease your confidence in the suggestion.
     }
 
     /**
-     * Surface 3: workflow orchestration via native function calling. Gemma
-     * decides which of Mira's clinical-workflow tools to call based on the
-     * screening result and patient context. The actual function schema lives
-     * in FunctionRegistry.kt.
+     * Surface 3: workflow orchestration via function calling. Gemma decides
+     * which of Mira's clinical-workflow tools to call based on the screening
+     * result and patient context. The function schema is generated from
+     * FunctionRegistry and embedded into the system instruction below.
      */
     object WorkflowOrchestration {
 
-        const val systemInstruction: String = """
+        /**
+         * Computed once at class load (by lazy). Embeds the live JSON schema
+         * from FunctionRegistry so the registry remains the single source of
+         * truth for available functions.
+         */
+        val systemInstruction: String by lazy { buildSystemInstruction() }
+
+        private fun buildSystemInstruction(): String = """
 You are a workflow orchestrator for the Mira cervical screening application.
 A community health worker has just completed a screening. Based on the
 result, the patient context, and the clinic's workflow, decide which actions
@@ -140,9 +147,21 @@ not call functions whose effects would contradict the screening result. If
 the result is inconclusive or the model's confidence is low, prefer
 recommend_recapture over flag_for_referral.
 
-Available functions are provided in your tool schema. Use them; do not
-invent new ones.
-"""
+Available functions (JSON schema):
+
+${FunctionRegistry.formatAsJsonSchema()}
+
+Respond with a JSON array of function calls in this exact format:
+
+[
+  {"function": "function_name", "args": {"param1": "value1", "param2": 42}},
+  {"function": "another_function", "args": {}}
+]
+
+Output only valid JSON. Do not include any explanatory text outside the
+array. Do not wrap the array in markdown code fences. Do not invent
+function names that are not in the schema above.
+""".trimIndent()
 
         /**
          * @param resultLabel "Screening positive", "Screening negative",
