@@ -59,9 +59,11 @@ import com.mira.screening.data.CaptureStore
 import com.mira.screening.data.ScreeningRepository
 import com.mira.screening.inference.ViaClassification
 import com.mira.screening.inference.ViaResult
+import com.mira.screening.ui.components.MiraExplainsCard
 import com.mira.screening.ui.theme.miraStatus
 import com.mira.screening.ui.util.heatmapToBitmap
 import java.util.Locale
+import kotlin.math.sqrt
 
 @Composable
 fun ResultScreen(
@@ -246,6 +248,38 @@ fun ResultScreen(
                     action = action,
                     isOverridden = override != null,
                     onConfidenceHelp = { showConfidenceHelp = true }
+                )
+
+                // Gemma 4 multilingual narration of the result. Owns its own
+                // generation lifecycle; TTS playback is routed through the
+                // existing TextToSpeech engine via the onPlayPressed callback.
+                MiraExplainsCard(
+                    resultLabel = label,
+                    confidencePercent = (result.confidence * 100).toInt(),
+                    heatmapFocus = remember(result) {
+                        heatmapFocusPhrase(
+                            heatmap = result.heatmap,
+                            width = result.heatmapWidth,
+                            height = result.heatmapHeight
+                        )
+                    },
+                    languageName = remember {
+                        localeToLanguageName(Locale.getDefault().language)
+                    },
+                    onPlayPressed = { textToSpeak ->
+                        if (speaking) {
+                            tts.stop()
+                            speaking = false
+                        } else if (ttsReady) {
+                            val params = Bundle().apply {
+                                putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "mira-explain")
+                                putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, 1.0f)
+                                putFloat(TextToSpeech.Engine.KEY_PARAM_PAN, 0.0f)
+                                putInt(TextToSpeech.Engine.KEY_PARAM_STREAM, AudioManager.STREAM_MUSIC)
+                            }
+                            tts.speak(textToSpeak, TextToSpeech.QUEUE_FLUSH, params, "mira-explain")
+                        }
+                    }
                 )
 
                 TextButton(
@@ -510,5 +544,67 @@ private fun actionRes(c: ViaClassification): Int = when (c) {
     ViaClassification.POSITIVE -> R.string.result_action_refer
     ViaClassification.NEGATIVE -> R.string.result_action_followup
     ViaClassification.INCONCLUSIVE -> R.string.result_action_reimage
+}
+
+/**
+ * Map an ISO 639-1 locale tag (the part before any region suffix) to the
+ * English name of the language. Gemma takes the English name in the prompt
+ * and responds in that language. Defaults to English if unknown.
+ */
+private fun localeToLanguageName(tag: String): String =
+    when (tag.substringBefore('-').lowercase()) {
+        "en" -> "English"
+        "es" -> "Spanish"
+        "pt" -> "Portuguese"
+        "fr" -> "French"
+        "sw" -> "Swahili"
+        "ha" -> "Hausa"
+        "yo" -> "Yoruba"
+        "ig" -> "Igbo"
+        "lg" -> "Luganda"
+        "qu" -> "Quechua"
+        else -> "English"
+    }
+
+/**
+ * Quick characterization of where the attention heatmap is concentrated.
+ * Computes the weighted centroid of the heatmap and reports whether it's
+ * near the image center (where the cervix should be framed) or off to a
+ * side (which is a sanity-check signal for the CHW that the model may be
+ * reading speculum walls or other artifacts rather than the cervix).
+ *
+ * This phrase goes into the Gemma narration prompt and the decision-support
+ * prompt, so the language is written for direct use in those contexts.
+ */
+private fun heatmapFocusPhrase(
+    heatmap: FloatArray?,
+    width: Int,
+    height: Int
+): String {
+    if (heatmap == null || heatmap.isEmpty() || width <= 0 || height <= 0) {
+        return "in the central area of the image"
+    }
+    var sumX = 0.0
+    var sumY = 0.0
+    var sumW = 0.0
+    for (y in 0 until height) {
+        for (x in 0 until width) {
+            val w = heatmap[y * width + x].coerceAtLeast(0f).toDouble()
+            sumX += x * w
+            sumY += y * w
+            sumW += w
+        }
+    }
+    if (sumW == 0.0) return "in the central area of the image"
+    val cx = (sumX / sumW) / width
+    val cy = (sumY / sumW) / height
+    val dx = cx - 0.5
+    val dy = cy - 0.5
+    val dist = sqrt(dx * dx + dy * dy)
+    return if (dist < 0.15) {
+        "centered on the cervix region of the image"
+    } else {
+        "off-center, away from the expected cervix region"
+    }
 }
 
