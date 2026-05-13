@@ -72,7 +72,7 @@ The image classifier is bundled inside the APK at `app/src/main/assets/mira_clas
 
 ## License
 
-Apache License 2.0. See `LICENSE`.
+Creative Commons Attribution 4.0 International (CC BY 4.0). See `LICENSE`.
 
 ## Contact
 
