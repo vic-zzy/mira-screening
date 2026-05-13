@@ -1,0 +1,302 @@
+package com.mira.screening.ui.screens
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.outlined.AutoAwesome
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
+import com.mira.screening.gemma.GemmaInference
+import com.mira.screening.gemma.PromptTemplates
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+
+/**
+ * "Ask Mira about VIA" training and Q&A surface for community health workers.
+ *
+ * The CHW types a question (technique, anatomy, when to refer, what
+ * acetowhitening looks like, edge cases) and Gemma 4 streams an answer
+ * token-by-token in the chat-style conversation log. The streaming UX is
+ * intentional: it tells the user the model is working without making them
+ * wait the full generation duration for any visible feedback.
+ *
+ * Hackathon-track alignment: Future of Education ("reimagine the learning
+ * journey... empower the educator") and Digital Equity (a CHW in a rural
+ * clinic with no specialist nearby gets an interactive curriculum at their
+ * fingertips, offline).
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CHWAssistantScreen(onBack: () -> Unit) {
+    val scope = rememberCoroutineScope()
+    val messages = remember { mutableStateListOf<ChatMessage>() }
+    var input by remember { mutableStateOf("") }
+    var isGenerating by remember { mutableStateOf(false) }
+    val listState = rememberLazyListState()
+
+    // On first composition, seed the conversation with an introductory
+    // assistant message so the empty-chat state isn't bare. This is local
+    // copy, not a Gemma call.
+    LaunchedEffect(Unit) {
+        if (messages.isEmpty()) {
+            messages.add(
+                ChatMessage(
+                    role = Role.Assistant,
+                    text = "Ask me anything about Visual Inspection with Acetic Acid. " +
+                        "I can help with technique, what acetowhitening looks like, the " +
+                        "transformation zone, when to refer, and how to read edge cases."
+                )
+            )
+        }
+    }
+
+    // Auto-scroll to bottom as new tokens stream in or new messages arrive.
+    LaunchedEffect(messages.size, messages.lastOrNull()?.text?.length) {
+        if (messages.isNotEmpty()) {
+            listState.animateScrollToItem(messages.size - 1)
+        }
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Ask Mira") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.background
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .imePadding()
+        ) {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(messages) { message ->
+                    MessageBubble(message = message)
+                }
+                if (isGenerating && messages.lastOrNull()?.role == Role.User) {
+                    item {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(14.dp),
+                                strokeWidth = 2.dp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(Modifier.size(8.dp))
+                            Text(
+                                "Mira is thinking.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+            }
+
+            InputBar(
+                value = input,
+                onValueChange = { input = it },
+                enabled = !isGenerating,
+                onSend = {
+                    val question = input.trim()
+                    if (question.isEmpty() || isGenerating) return@InputBar
+                    input = ""
+                    messages.add(ChatMessage(role = Role.User, text = question))
+                    val assistantMessage = ChatMessage(role = Role.Assistant, text = "")
+                    messages.add(assistantMessage)
+                    val placeholderIndex = messages.lastIndex
+                    isGenerating = true
+                    scope.launch {
+                        try {
+                            val builder = StringBuilder()
+                            GemmaInference.generateStream(
+                                prompt = PromptTemplates.TrainingQA.userPrompt(question),
+                                systemInstruction = PromptTemplates.TrainingQA.systemInstruction
+                            ).catch { t ->
+                                builder.append(
+                                    "Sorry, I could not generate an answer right now. (${t.message.orEmpty()})"
+                                )
+                            }.collect { token ->
+                                builder.append(token)
+                                messages[placeholderIndex] = assistantMessage.copy(
+                                    text = builder.toString()
+                                )
+                            }
+                        } finally {
+                            isGenerating = false
+                        }
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun MessageBubble(message: ChatMessage) {
+    val isUser = message.role == Role.User
+    val align = if (isUser) Alignment.End else Alignment.Start
+    val bubbleColor = if (isUser) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant
+    }
+    val textColor = if (isUser) {
+        MaterialTheme.colorScheme.onPrimary
+    } else {
+        MaterialTheme.colorScheme.onSurface
+    }
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = align
+    ) {
+        if (!isUser) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Outlined.AutoAwesome,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(14.dp)
+                )
+                Spacer(Modifier.size(6.dp))
+                Text(
+                    "Mira",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Spacer(Modifier.size(4.dp))
+        }
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(16.dp))
+                .background(bubbleColor)
+                .padding(horizontal = 14.dp, vertical = 10.dp)
+        ) {
+            Text(
+                text = message.text.ifEmpty { " " },
+                style = MaterialTheme.typography.bodyLarge,
+                color = textColor
+            )
+        }
+    }
+}
+
+@Composable
+private fun InputBar(
+    value: String,
+    onValueChange: (String) -> Unit,
+    enabled: Boolean,
+    onSend: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier.weight(1f),
+            placeholder = { Text("Ask a question about VIA.") },
+            enabled = enabled,
+            shape = RoundedCornerShape(20.dp),
+            maxLines = 4,
+            keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                imeAction = ImeAction.Send
+            ),
+            keyboardActions = androidx.compose.foundation.text.KeyboardActions(
+                onSend = { onSend() }
+            )
+        )
+        Spacer(Modifier.size(8.dp))
+        IconButton(
+            onClick = onSend,
+            enabled = enabled && value.isNotBlank(),
+            modifier = Modifier
+                .size(48.dp)
+                .clip(RoundedCornerShape(24.dp))
+                .background(
+                    if (enabled && value.isNotBlank()) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.surfaceVariant
+                    }
+                )
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.Send,
+                contentDescription = "Send",
+                tint = if (enabled && value.isNotBlank()) {
+                    MaterialTheme.colorScheme.onPrimary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                }
+            )
+        }
+    }
+}
+
+private enum class Role { User, Assistant }
+
+private data class ChatMessage(
+    val role: Role,
+    val text: String
+)
