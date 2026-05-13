@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.mira.screening.data.Prefs
+import com.mira.screening.ui.screens.CHWAssistantScreen
 import com.mira.screening.ui.screens.CaptureScreen
 import com.mira.screening.ui.screens.HistoryDetailScreen
 import com.mira.screening.ui.screens.HistoryScreen
@@ -29,6 +30,7 @@ object Routes {
     const val HistoryDetail = "history/{recordId}"
     const val Settings = "settings"
     const val Onboarding = "onboarding"
+    const val Assistant = "assistant"
 
     fun processing(captureId: String) = "processing/$captureId"
     fun result(captureId: String) = "result/$captureId"
@@ -60,7 +62,8 @@ fun MiraNavHost() {
             HomeScreen(
                 onStartScreening = { navController.navigate(Routes.PreCapture) },
                 onOpenHistory = { navController.navigate(Routes.History) },
-                onOpenSettings = { navController.navigate(Routes.Settings) }
+                onOpenSettings = { navController.navigate(Routes.Settings) },
+                onOpenAssistant = { navController.navigate(Routes.Assistant) }
             )
         }
         composable(Routes.PreCapture) {
@@ -127,6 +130,9 @@ fun MiraNavHost() {
         }
         composable(Routes.Settings) {
             SettingsScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Routes.Assistant) {
+            CHWAssistantScreen(onBack = { navController.popBackStack() })
         }
     }
 }

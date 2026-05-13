@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
@@ -45,7 +46,8 @@ import com.mira.screening.ui.theme.MiraTheme
 fun HomeScreen(
     onStartScreening: () -> Unit,
     onOpenHistory: () -> Unit,
-    onOpenSettings: () -> Unit
+    onOpenSettings: () -> Unit,
+    onOpenAssistant: () -> Unit
 ) {
     Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
         Column(
@@ -119,11 +121,19 @@ fun HomeScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            // Secondary actions: two equally-weighted soft tiles.
+            // Secondary actions: three equally-weighted soft tiles. The
+            // "Ask Mira" tile opens the Gemma 4 powered training and Q&A
+            // surface for CHWs to learn VIA technique and interpretation.
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                SecondaryTile(
+                    label = "Ask Mira",
+                    icon = Icons.Outlined.AutoAwesome,
+                    onClick = onOpenAssistant,
+                    modifier = Modifier.weight(1f)
+                )
                 SecondaryTile(
                     label = stringResource(R.string.home_history),
                     icon = Icons.Outlined.History,
@@ -178,7 +188,8 @@ private fun HomeScreenPreview() {
         HomeScreen(
             onStartScreening = {},
             onOpenHistory = {},
-            onOpenSettings = {}
+            onOpenSettings = {},
+            onOpenAssistant = {}
         )
     }
 }
