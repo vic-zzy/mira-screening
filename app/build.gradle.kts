@@ -46,6 +46,7 @@ android {
 
     androidResources {
         noCompress += "tflite"
+        noCompress += "litertlm"
     }
 
     sourceSets["main"].java.srcDirs("src/main/kotlin")
@@ -85,6 +86,9 @@ dependencies {
 
     implementation(libs.tflite)
     implementation(libs.tflite.support)
+
+    // Google AI Edge LiteRT-LM, for running Gemma 4 on-device via .litertlm files.
+    implementation(libs.litertlm.android)
 
     implementation(libs.kotlinx.coroutines.android)
 

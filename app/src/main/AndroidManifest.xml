@@ -25,6 +25,16 @@
         android:theme="@style/Theme.Mira"
         tools:targetApi="34">
 
+        <!-- Optional native libraries for GPU acceleration of LiteRT-LM (Gemma 4)
+             inference. Both are non-required: if a device lacks them, Gemma falls
+             back to CPU inference automatically. -->
+        <uses-native-library
+            android:name="libvndksupport.so"
+            android:required="false" />
+        <uses-native-library
+            android:name="libOpenCL.so"
+            android:required="false" />
+
         <!-- Allows AppCompatDelegate.setApplicationLocales to persist and survive
              process death without rolling our own storage. -->
         <service
