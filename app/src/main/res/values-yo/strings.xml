@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Yoruba (yo), machine-translated, pending native medical-language review. -->
+<resources>
+    <string name="app_name">Mira</string>
+    <string name="app_tagline">Ìríran amọ̀ye, níbi gbogbo</string>
+
+    <string name="action_back">Padà</string>
+    <string name="action_done">Ó parí</string>
+    <string name="action_next">Tó kàn</string>
+    <string name="action_skip">Fò ó</string>
+
+    <string name="home_start">Bẹ̀rẹ̀ àyẹ̀wò</string>
+    <string name="home_history">Ìtàn</string>
+    <string name="home_settings">Ètò</string>
+
+    <string name="onboarding_p1_title">Ìrànlọ́wọ́ amọ̀ye nínú àpò rẹ</string>
+    <string name="onboarding_p1_body">Mira jẹ́ irinṣẹ́ àyẹ̀wò tó ń wo àwòrán ọrùn ilé-ọmọ pẹ̀lú rẹ tí yóò sì dámọ̀ràn bóyá kí o rán aláìsàn lọ síbi amọ̀ye. Ìpinnu ìṣègùn tirẹ ṣì wà lápá rẹ.</string>
+    <string name="onboarding_p2_title">Ìgbésẹ̀ mẹ́ta tó rọrùn</string>
+    <string name="onboarding_p2_body">Tújú aláìsàn sílẹ̀, kí o sì tẹ̀ ẹ́ lẹ́ẹ̀kan. Mira yóò ya àwọn àwòrán mẹ́ta yára yára, yóò yan èyí tó dára jùlọ, yóò sì fihan ìmọ̀ràn pẹ̀lú àmì ìgbẹ́kẹ̀lé. Ìwọ ló máa pinnu ohun tó kàn.</string>
+    <string name="onboarding_p3_title">Àṣírí rẹ ni àkọ́kọ́</string>
+    <string name="onboarding_p3_body">Àwọn àwòrán aláìsàn yóò wà lórí fóònù yìí. Mira kò ní rán wọn lọ síbi kankan àfi tí ìwọ bá yàn bẹ́ẹ̀.</string>
+    <string name="onboarding_get_started">Bẹ̀rẹ̀</string>
+
+    <string name="precapture_title">Tújú àyà sílẹ̀ fún ìgbà fọ́tò</string>
+    <string name="precapture_instruction">Tẹ̀ ìgbésẹ̀ kọ̀ọ̀kan bí o ti ń parí wọn.</string>
+    <string name="precapture_step_speculum">A ti gbé speculum sí ààyè</string>
+    <string name="precapture_step_acetic">A ti fi acetic acid sí</string>
+    <string name="precapture_timer_idle">Ìdúró ìṣẹ́jú-aya 60 yóò bẹ̀rẹ̀ lẹ́yìn acetic acid</string>
+    <string name="precapture_timer_running">Ó ń dúró ìṣẹ́jú-aya 60 fún ìdáhùn acetowhite…</string>
+    <string name="precapture_timer_done">Ìdúró parí</string>
+    <string name="precapture_continue">Tẹ̀síwájú sí ìgbà fọ́tò</string>
+    <string name="precapture_continue_disabled">Pari gbogbo ìgbésẹ̀ láti tẹ̀síwájú</string>
+    <string name="precapture_seconds_left">%1$ds</string>
+    <string name="precapture_patient_id_label">ID aláìsàn (kò ṣe dandan)</string>
+    <string name="precapture_patient_id_hint">apẹẹrẹ 2026-04-26-001</string>
+
+    <string name="capture_permission_title">Mira nílò kámẹ́rà</string>
+    <string name="capture_permission_body">Mira ń lo kámẹ́rà láti ya àwòrán ọrùn ilé-ọmọ. Àwòrán wà lórí fóònù yìí àfi bí ìwọ bá yàn láti fi ránṣẹ́.</string>
+    <string name="capture_permission_allow">Gba kámẹ́rà</string>
+    <string name="capture_permission_blocked_title">A ti dí ojú-ọ̀nà sí kámẹ́rà</string>
+    <string name="capture_permission_blocked_body">Mira nílò ìgbàláàyè kámẹ́rà láti ya àwòrán. Jọ̀wọ́ sí i lágbára nínú Ètò fóònù rẹ.</string>
+    <string name="capture_permission_open_settings">Ṣí ètò sílẹ̀</string>
+    <string name="capture_torch">Ìmọ́lẹ̀</string>
+    <string name="capture_button">Ya àwòrán</string>
+    <string name="capture_capturing">Ó ń ya àwòrán…</string>
+    <string name="capture_captured">A ti yà</string>
+    <string name="capture_burst_progress">Àwòrán %1$d nínú %2$d</string>
+    <string name="capture_burst_hold">Mú u dúró</string>
+    <string name="capture_burst_kept">A ti lo %1$d nínú %2$d</string>
+
+    <string name="quality_too_dark">Òkùnkùn jù, tan ìmọ́lẹ̀</string>
+    <string name="quality_too_bright">Ìmọ́lẹ̀ pọ̀ jù, yí ipò pa dà</string>
+    <string name="quality_too_glare">Ìtànṣán pọ̀ jù, yí ipò pa dà</string>
+    <string name="quality_too_blurry">Mú u dúró, àwòrán kò mọ́</string>
+    <string name="quality_somewhat_blurry">Mú u dúró, ó ń ṣe àtúnṣe</string>
+    <string name="quality_good">Iye àwòrán dára</string>
+
+    <string name="processing_step_color">Ó ń ṣe àtúnṣe àwọ̀…</string>
+    <string name="processing_step_reading">Ó ń ka àwòrán…</string>
+    <string name="processing_step_heatmap">Ó ń ya àwòrán ooru…</string>
+    <string name="processing_subtitle">Mira ń ṣàyẹ̀wò àwòrán. Eyi sábà máa ń gba ìṣẹ́jú-aya díẹ̀.</string>
+
+    <string name="result_title">Àbájáde àyẹ̀wò</string>
+    <string name="result_positive">Àyẹ̀wò ti dájú</string>
+    <string name="result_negative">Àyẹ̀wò kò dájú</string>
+    <string name="result_inconclusive">Kò pari</string>
+    <string name="result_action_refer">Rán an lọ fún ìtọ́jú</string>
+    <string name="result_action_followup">Tẹ̀lé e ní ọdún 3 sí 5</string>
+    <string name="result_action_reimage">Jọ̀wọ́ ya àwòrán mìíràn, ìgbẹ́kẹ̀lé kéré jù</string>
+    <string name="result_show_heatmap">Fi àwòrán ooru hàn</string>
+    <string name="result_hide_heatmap">Fi àwòrán ooru pamọ́</string>
+    <string name="result_play">Tẹ àbájáde sí</string>
+    <string name="result_stop">Dúró</string>
+    <string name="result_disagree">N kò gbà pẹ̀lú àbájáde yìí</string>
+    <string name="result_override_dialog_title">Àyípadà lọ́wọ́</string>
+    <string name="result_override_dialog_body">Báwo ni àyẹ̀wò náà ṣe rí lójú rẹ?</string>
+    <string name="result_override_positive">Tọ́ka sí pé ó dájú</string>
+    <string name="result_override_negative">Tọ́ka sí pé kò dájú</string>
+    <string name="result_override_inconclusive">Tọ́ka sí pé kò pari</string>
+    <string name="result_override_save">Tọ́jú àyípadà</string>
+    <string name="result_override_cancel">Fagi lé</string>
+    <string name="result_override_banner">Ìwọ fúnra rẹ ti yí padà</string>
+    <string name="help_dialog_close">Ó yé mi</string>
+    <string name="help_heatmap_title">Kí ni àwòrán ooru?</string>
+    <string name="help_heatmap_body">Àwọ̀ tó wà lórí fihàn ibi tí Mira wo nígbà tí ó ń pinnu. Àwọn ibi tó mọ́lẹ̀ ni àwọn agbègbè tí Mira gbà pé ó ṣe pàtàkì. Bí ibi tó mọ́lẹ̀ bá wà lórí ọrùn ilé-ọmọ tí ó sì bá ohun tí o rí gẹ́gẹ́ bí acetowhite mu, àbájáde náà bọ̀wọ̀ púpọ̀ sí i. Bí ó bá wà lórí speculum tàbí ibòmíràn, fi sọ́kàn pẹ̀lú ìṣọ́ra kí o sì ronú láti ya àwòrán mìíràn.</string>
+    <string name="help_confidence_title">Kí ni ìgbẹ́kẹ̀lé túmọ̀ sí?</string>
+    <string name="help_confidence_body">Ìgbẹ́kẹ̀lé ni iye tí Mira gbẹ́kẹ̀lé ìdáhùn rẹ̀, láti 0 sí 100%%. Ní oke 80%% ní agbára. Ní isalẹ̀ ààlà tí o gbé kalẹ̀ ní Ètò (àpẹẹrẹ 65%%), Mira yóò tọ́ka àbájáde sí pé kò pari yóò sì béèrè kí o ya àwòrán mìíràn. Ìpinnu ìṣègùn rẹ ṣe pàtàkì jù nọ́mbà náà lọ.</string>
+    <string name="result_confidence">Ìgbẹ́kẹ̀lé: %1$d%%</string>
+    <string name="result_unavailable">Àbájáde kò sí</string>
+    <string name="result_heatmap_a11y">Àwòrán ooru àfojúsùn</string>
+
+    <string name="history_title">Ìtàn</string>
+    <string name="history_empty">Kò sí àyẹ̀wò síbẹ̀.\nÀbájáde yóò hàn níhìn-ín lẹ́yìn àwòrán kọ̀ọ̀kan.</string>
+    <string name="history_label_inconclusive">Kò pari</string>
+    <string name="history_confidence">Ìgbẹ́kẹ̀lé %1$d%%</string>
+    <string name="history_patient_id">ID aláìsàn: %1$s</string>
+    <string name="history_detail_title">Àlàyé àyẹ̀wò</string>
+    <string name="history_action_delete">Pa àkọsílẹ̀ rẹ́</string>
+    <string name="history_delete_confirm_title">Pa àkọsílẹ̀ yìí rẹ́?</string>
+    <string name="history_delete_confirm_body">Eyi yóò pa àkọsílẹ̀ àti àwòrán èyíkéyìí tí a tọ́jú rẹ́ títí láé.</string>
+    <string name="history_delete_confirm_yes">Pa rẹ́</string>
+    <string name="history_delete_confirm_cancel">Fagi lé</string>
+    <string name="history_no_image">Kò sí àwòrán tí a tọ́jú fún àkọsílẹ̀ yìí.</string>
+    <string name="history_action_clear_all">Pa gbogbo rẹ̀</string>
+    <string name="history_clear_all_confirm_title">Pa gbogbo àyẹ̀wò rẹ́?</string>
+    <string name="history_clear_all_confirm_body">Eyi yóò pa gbogbo àkọsílẹ̀ àyẹ̀wò àti àwọn àwòrán tí a tọ́jú rẹ́ títí láé. A kò lè yí padà.</string>
+    <string name="history_clear_all_confirm_yes">Pa gbogbo rẹ̀</string>
+
+    <string name="settings_title">Ètò</string>
+    <string name="settings_section_privacy">Àṣírí</string>
+    <string name="settings_section_threshold">Ààlà ìgbẹ́kẹ̀lé</string>
+    <string name="settings_section_about">Nípa</string>
+    <string name="settings_section_language">Èdè</string>
+    <string name="settings_language_system">Èdè ètò</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_language_es">Español</string>
+    <string name="settings_language_pt">Português</string>
+    <string name="settings_language_fr">Français</string>
+    <string name="settings_language_sw">Kiswahili</string>
+    <string name="settings_language_ha">Hausa</string>
+    <string name="settings_language_yo">Yorùbá</string>
+    <string name="settings_language_ig">Igbo</string>
+    <string name="settings_language_lg">Luganda</string>
+    <string name="settings_language_qu">Runa Simi</string>
+    <string name="settings_save_images">Tọ́jú àwọn àwòrán àyẹ̀wò sórí fóònù yìí</string>
+    <string name="settings_save_images_body">Bí ó bá pa, àbájáde nìkan ni a tọ́jú, kò sí àwòrán aláìsàn tí yóò wà lórí fóònù.</string>
+    <string name="settings_section_developer">Olùdá (àtúnṣe nìkan)</string>
+    <string name="settings_validity_gate">Ìdánwò ìmúdájú ọrùn ilé-ọmọ</string>
+    <string name="settings_validity_gate_body">Kọ̀ àwọn àwòrán tí kò dàbí ẹran ọrùn ilé-ọmọ (ọwọ́, ògiri, abbl.) kí ó tó pín. Ó padà sí KÚN ní ìgbà gbogbo tí app bá ṣí, àyípadà ìpàdé fún ìdánwò saliency lórí emulator. Kò lè di pa nínú àwọn àkọ́sílẹ̀ ìṣèlọ́pọ̀.</string>
+    <string name="settings_threshold_body">Ní isalẹ̀ ìgbẹ́kẹ̀lé yìí, Mira yóò tọ́ka àbájáde sí pé kò pari yóò sì béèrè kí o ya àwòrán mìíràn.</string>
+    <string name="settings_threshold_value">%1$d%%</string>
+    <string name="settings_version">Ẹ̀dà %1$s</string>
+    <string name="settings_disclaimer">Mira ń ran ìṣàyẹ̀wò lọ́wọ́, kì í ṣe ìdámọ̀ àìsàn. Àwọn ìpinnu ìṣègùn ìkẹyìn jẹ́ ojúṣe òṣìṣẹ́ tí a kọ́.</string>
+</resources>

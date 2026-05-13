@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Luganda (lg), machine-translated, pending native medical-language review. -->
+<resources>
+    <string name="app_name">Mira</string>
+    <string name="app_tagline">Okulaba kw\'omukugu, wonna</string>
+
+    <string name="action_back">Komawo</string>
+    <string name="action_done">Kuwedde</string>
+    <string name="action_next">Ekiddako</string>
+    <string name="action_skip">Buuka</string>
+
+    <string name="home_start">Tandika okukebera</string>
+    <string name="home_history">Ebyafaayo</string>
+    <string name="home_settings">Entegeka</string>
+
+    <string name="onboarding_p1_title">Obuyambi bw\'omukugu mu nsawo yo</string>
+    <string name="onboarding_p1_body">Mira kintu ekikola okukebera ekitunula ekifaananyi ky\'omulamwa gw\'olubuto naawe ne kiteesa oba omulwadde asaanidde okuweerezebwa. Okusalawo kwo okw\'eddagala kukyali mu mukono gwo.</string>
+    <string name="onboarding_p2_title">Amatendeka asatu amangu</string>
+    <string name="onboarding_p2_body">Tegeka omulwadde n\'okoma omulundi gumu. Mira eddako bifaananyi bisatu mu kasera akamu, eronda ekisinga obulungi, n\'eyolesa amagezi n\'akabonero k\'obwesige. Ggwe osalawo eky\'okukola ekiddako.</string>
+    <string name="onboarding_p3_title">Ekyama kyo kya kusooka</string>
+    <string name="onboarding_p3_body">Ebifaananyi by\'abalwadde bisigala ku ssimu eno. Mira tebiweereza wonna okuggyako bw\'osalawo.</string>
+    <string name="onboarding_get_started">Tandika</string>
+
+    <string name="precapture_title">Tegeka okukuba ekifaananyi</string>
+    <string name="precapture_instruction">Koma ku buli ddaala bw\'omaliriza.</string>
+    <string name="precapture_step_speculum">Speculum esiseeko</string>
+    <string name="precapture_step_acetic">Acetic acid eteeseko</string>
+    <string name="precapture_timer_idle">Okulinda kwa sekonda 60 kuyiniira oluvannyuma lwa acetic acid</string>
+    <string name="precapture_timer_running">Yalindirira sekonda 60 olw\'okuddamu kwa acetowhite…</string>
+    <string name="precapture_timer_done">Okulinda kuwedde</string>
+    <string name="precapture_continue">Genda mu maaso okukuba ekifaananyi</string>
+    <string name="precapture_continue_disabled">Maliriza amatendeka gonna okugenda mu maaso</string>
+    <string name="precapture_seconds_left">%1$ds</string>
+    <string name="precapture_patient_id_label">ID y\'omulwadde (si nkakata)</string>
+    <string name="precapture_patient_id_hint">eky\'okulabira ku 2026-04-26-001</string>
+
+    <string name="capture_permission_title">Mira yetaaga kkamera</string>
+    <string name="capture_permission_body">Mira ekozesa kkamera okukuba ekifaananyi ky\'omulamwa gw\'olubuto. Ekifaananyi kisigala ku ssimu eno okuggyako bw\'osalawo okusiba.</string>
+    <string name="capture_permission_allow">Kkiriza kkamera</string>
+    <string name="capture_permission_blocked_title">Okutuuka ku kkamera kuziyiziddwa</string>
+    <string name="capture_permission_blocked_body">Mira yetaaga olukusa lwa kkamera okukuba ebifaananyi. Bambi giwe maanyi mu Ntegeka eza ssimu yo.</string>
+    <string name="capture_permission_open_settings">Bikkula entegeka</string>
+    <string name="capture_torch">Ekitangaala</string>
+    <string name="capture_button">Kuba ekifaananyi</string>
+    <string name="capture_capturing">Akuba ekifaananyi…</string>
+    <string name="capture_captured">Kikubiddwa</string>
+    <string name="capture_burst_progress">Ekifaananyi %1$d ku %2$d</string>
+    <string name="capture_burst_hold">Kikwate bulungi</string>
+    <string name="capture_burst_kept">Wakozesebbwa %1$d ku %2$d</string>
+
+    <string name="quality_too_dark">Kizibu nnyo, koleeza ekitangaala</string>
+    <string name="quality_too_bright">Kitangaala nnyo, kyusa ekifo</string>
+    <string name="quality_too_glare">Ekitangaala kingi, kyusa ekifo</string>
+    <string name="quality_too_blurry">Kikwate, ekifaananyi tekirabika bulungi</string>
+    <string name="quality_somewhat_blurry">Kikwate, kikolaganya</string>
+    <string name="quality_good">Omutindo gw\'ekifaananyi mulungi</string>
+
+    <string name="processing_step_color">Akolaganya langi…</string>
+    <string name="processing_step_reading">Asoma ekifaananyi…</string>
+    <string name="processing_step_heatmap">Akuba mappu y\'ebbugumu…</string>
+    <string name="processing_subtitle">Mira yenoonyereza ku kifaananyi. Kino kitwala sekonda ntono.</string>
+
+    <string name="result_title">Ebivudde mu kukebera</string>
+    <string name="result_positive">Okukebera kukakasa</string>
+    <string name="result_negative">Okukebera tekukakasa</string>
+    <string name="result_inconclusive">Tekikakata</string>
+    <string name="result_action_refer">Mufiise ajjanjabibwe</string>
+    <string name="result_action_followup">Goberera mu myaka 3 okutuuka ku 5</string>
+    <string name="result_action_reimage">Bambi ddamu okuba ekifaananyi, obwesige bw\'akatono</string>
+    <string name="result_show_heatmap">Yolesa mappu y\'ebbugumu</string>
+    <string name="result_hide_heatmap">Kweka mappu y\'ebbugumu</string>
+    <string name="result_play">Zannya ebivudde</string>
+    <string name="result_stop">Yimirira</string>
+    <string name="result_disagree">Sikkiriza ebivudde bino</string>
+    <string name="result_override_dialog_title">Okukyusa kw\'omukono</string>
+    <string name="result_override_dialog_body">Okukebera kufaanana otya gy\'oli?</string>
+    <string name="result_override_positive">Teekako nti kukakasa</string>
+    <string name="result_override_negative">Teekako nti tekukakasa</string>
+    <string name="result_override_inconclusive">Teekako nti tekikakata</string>
+    <string name="result_override_save">Kuuma okukyusa</string>
+    <string name="result_override_cancel">Sazaamu</string>
+    <string name="result_override_banner">Wakyusiddwa nawe</string>
+    <string name="help_dialog_close">Kitegedde</string>
+    <string name="help_heatmap_title">Mappu y\'ebbugumu kiki?</string>
+    <string name="help_heatmap_body">Langi etadde waggulu eraga we Mira yatunula bwe yali asalawo. Ebifo eby\'ekitangaala bye bitundu Mira bye yalowoozaako nti bikulu. Bwe kifo ky\'ekitangaala bwe kiba ku mulamwa gw\'olubuto era nga kikwatagana n\'ekyo ky\'olaba nga acetowhite, ebivudde bisingayo okwesigibwa. Bwe biba ku speculum oba awalala, twala ebivudde n\'obwegendereza era olowooze okuddamu okuba ekifaananyi.</string>
+    <string name="help_confidence_title">Obwesige butegeeza ki?</string>
+    <string name="help_confidence_body">Obwesige bwe nga Mira bw\'enesigayo eky\'okuddamu, okuva ku 0 okutuuka ku 100%%. Waggulu wa 80%% kya maanyi. Wansi w\'omugibo gw\'oteeka mu Ntegeka (eya kawefube 65%%), Mira ejja kuteeka ebivudde nga tebikakata era ekusabe okuddamu okuba ekifaananyi. Okusalawo kwo okw\'eddagala kusinga obukulu w\'enamba.</string>
+    <string name="result_confidence">Obwesige: %1$d%%</string>
+    <string name="result_unavailable">Ebivudde tebiriiwo</string>
+    <string name="result_heatmap_a11y">Mappu y\'ebbugumu ey\'okuwuliriza</string>
+
+    <string name="history_title">Ebyafaayo</string>
+    <string name="history_empty">Tewali kukebera kukolebbwa.\nEbivudde bijja kulabika wano oluvannyuma lwa buli kifaananyi.</string>
+    <string name="history_label_inconclusive">Tekikakata</string>
+    <string name="history_confidence">Obwesige %1$d%%</string>
+    <string name="history_patient_id">ID y\'omulwadde: %1$s</string>
+    <string name="history_detail_title">Ebikwata ku kukebera</string>
+    <string name="history_action_delete">Sazaamu rikodi</string>
+    <string name="history_delete_confirm_title">Sazaamu rikodi eno?</string>
+    <string name="history_delete_confirm_body">Kino kiggyawo rikodi n\'ekifaananyi kyonna ekikuumiddwa olw\'emirembe.</string>
+    <string name="history_delete_confirm_yes">Sazaamu</string>
+    <string name="history_delete_confirm_cancel">Sazaamu</string>
+    <string name="history_no_image">Tewali kifaananyi kikuumiddwa olw\'rikodi eno.</string>
+    <string name="history_action_clear_all">Sazaamu byonna</string>
+    <string name="history_clear_all_confirm_title">Sazaamu okukebera kwonna?</string>
+    <string name="history_clear_all_confirm_body">Kino kiggyawo buli rikodi y\'okukebera n\'ebifaananyi byonna ebikuumiddwa olw\'emirembe. Tekisoboka kuddamu.</string>
+    <string name="history_clear_all_confirm_yes">Sazaamu byonna</string>
+
+    <string name="settings_title">Entegeka</string>
+    <string name="settings_section_privacy">Ekyama</string>
+    <string name="settings_section_threshold">Omugibo gw\'obwesige</string>
+    <string name="settings_section_about">Ku</string>
+    <string name="settings_section_language">Olulimi</string>
+    <string name="settings_language_system">Olulimi lwa sisitemu</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_language_es">Español</string>
+    <string name="settings_language_pt">Português</string>
+    <string name="settings_language_fr">Français</string>
+    <string name="settings_language_sw">Kiswahili</string>
+    <string name="settings_language_ha">Hausa</string>
+    <string name="settings_language_yo">Yorùbá</string>
+    <string name="settings_language_ig">Igbo</string>
+    <string name="settings_language_lg">Luganda</string>
+    <string name="settings_language_qu">Runa Simi</string>
+    <string name="settings_save_images">Kuuma ebifaananyi by\'okukebera ku ssimu eno</string>
+    <string name="settings_save_images_body">Bw\'eba esannyuusiddwa, ebivudde byokka bye bikuumibwa, tewali kifaananyi ky\'omulwadde kisigala ku ssimu.</string>
+    <string name="settings_section_developer">Akoleza (okudobonkanya kwokka)</string>
+    <string name="settings_validity_gate">Okwekebera obwennyini bw\'omulamwa gw\'olubuto</string>
+    <string name="settings_validity_gate_body">Gaana ebifaananyi ebitafaanana ng\'enyama y\'omulamwa gw\'olubuto (omukono, ekisenge, n\'ebirala) nga tonnaba kubikolaganya. Eddamu ku KOLA buli puloguramu lw\'etandika, okukyusa kw\'omulundi gwokka okugezesa saliency ku emulator. Tesobola kuzikizibwa mu nzimba ez\'okukola.</string>
+    <string name="settings_threshold_body">Wansi w\'obwesige buno, Mira ejja kuteeka ebivudde nga tebikakata era ekusabe okuddamu okuba ekifaananyi.</string>
+    <string name="settings_threshold_value">%1$d%%</string>
+    <string name="settings_version">Ekibinja %1$s</string>
+    <string name="settings_disclaimer">Mira buyambi bw\'okukebera, si kuzuula kya bulwadde. Okusalawo okusembayo okw\'eddagala kya kuvunaanyizibwa kw\'omukugu eyatendekebwa.</string>
+</resources>

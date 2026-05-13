@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Adaptive-icon background. Matches MiraTeal (deep teal) from the brand mark. -->
+    <color name="ic_launcher_background">#2A4A4D</color>
+</resources>

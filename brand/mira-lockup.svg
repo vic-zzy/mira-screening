@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="200" viewBox="0 0 320 100" role="img" aria-label="Mira lockup">
+  <title>Mira — full lockup (mark + wordmark)</title>
+  
+  <g transform="translate(8 18) scale(1.33)">
+    <circle cx="24" cy="24" r="22" fill="none" stroke="#2A4A4D" stroke-width="1.75"></circle>
+    <g fill="#2A4A4D">
+      <path d="M 24 4.5 L 38.7 21 L 24 21 Z" opacity="0.18" transform="rotate(0 24 24)"></path>
+      <path d="M 24 4.5 L 38.7 21 L 24 21 Z" opacity="0.24" transform="rotate(60 24 24)"></path>
+      <path d="M 24 4.5 L 38.7 21 L 24 21 Z" opacity="0.18" transform="rotate(120 24 24)"></path>
+      <path d="M 24 4.5 L 38.7 21 L 24 21 Z" opacity="0.24" transform="rotate(180 24 24)"></path>
+      <path d="M 24 4.5 L 38.7 21 L 24 21 Z" opacity="0.18" transform="rotate(240 24 24)"></path>
+      <path d="M 24 4.5 L 38.7 21 L 24 21 Z" opacity="0.24" transform="rotate(300 24 24)"></path>
+    </g>
+    <g fill="none" stroke="#2A4A4D" stroke-width="0.9" stroke-linejoin="round" opacity="0.85">
+      <path d="M 24 4.5 L 38.7 21 L 24 21 Z" transform="rotate(0 24 24)"></path>
+      <path d="M 24 4.5 L 38.7 21 L 24 21 Z" transform="rotate(60 24 24)"></path>
+      <path d="M 24 4.5 L 38.7 21 L 24 21 Z" transform="rotate(120 24 24)"></path>
+      <path d="M 24 4.5 L 38.7 21 L 24 21 Z" transform="rotate(180 24 24)"></path>
+      <path d="M 24 4.5 L 38.7 21 L 24 21 Z" transform="rotate(240 24 24)"></path>
+      <path d="M 24 4.5 L 38.7 21 L 24 21 Z" transform="rotate(300 24 24)"></path>
+    </g>
+    <circle cx="24" cy="24" r="5.5" fill="#C97A4A"></circle>
+  </g>
+  
+  <text x="110" y="71" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="74" fill="#2A4A4D" letter-spacing="-0.7">mira</text>
+</svg>

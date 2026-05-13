@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mira</string>
+    <string name="app_tagline">Vue spécialisée, partout</string>
+
+    <string name="action_back">Retour</string>
+    <string name="action_done">Terminé</string>
+    <string name="action_next">Suivant</string>
+    <string name="action_skip">Passer</string>
+
+    <string name="home_start">Démarrer le dépistage</string>
+    <string name="home_history">Historique</string>
+    <string name="home_settings">Paramètres</string>
+
+    <string name="onboarding_p1_title">Aide spécialisée dans votre poche</string>
+    <string name="onboarding_p1_body">Mira est un outil de dépistage qui analyse l\'image du col de l\'utérus avec vous et suggère si la patiente doit être référée. Votre jugement clinique reste aux commandes.</string>
+    <string name="onboarding_p2_title">Trois étapes simples</string>
+    <string name="onboarding_p2_body">Préparez la patiente et touchez une fois. Mira prend trois photos rapides à la suite, choisit la plus nette et affiche une suggestion avec un score de confiance. Vous décidez de la suite.</string>
+    <string name="onboarding_p3_title">Votre confidentialité d\'abord</string>
+    <string name="onboarding_p3_body">Les images des patientes restent sur ce téléphone. Mira ne les envoie nulle part sans votre choix.</string>
+    <string name="onboarding_get_started">Commencer</string>
+
+    <string name="precapture_title">Préparer la capture</string>
+    <string name="precapture_instruction">Touchez chaque étape une fois terminée.</string>
+    <string name="precapture_step_speculum">Spéculum inséré</string>
+    <string name="precapture_step_acetic">Acide acétique appliqué</string>
+    <string name="precapture_timer_idle">L\'attente de 60 s commence après l\'acide acétique</string>
+    <string name="precapture_timer_running">Attente de 60 s pour la réaction acétoblanche…</string>
+    <string name="precapture_timer_done">Attente terminée</string>
+    <string name="precapture_continue">Continuer vers la capture</string>
+    <string name="precapture_continue_disabled">Terminez toutes les étapes pour continuer</string>
+    <string name="precapture_seconds_left">%1$d s</string>
+    <string name="precapture_patient_id_label">ID patiente (facultatif)</string>
+    <string name="precapture_patient_id_hint">ex. 2026-04-26-001</string>
+
+    <string name="capture_permission_title">Mira a besoin de la caméra</string>
+    <string name="capture_permission_body">Mira utilise la caméra pour capturer l\'image du col de l\'utérus. L\'image reste sur ce téléphone sauf si vous choisissez de la synchroniser.</string>
+    <string name="capture_permission_allow">Autoriser la caméra</string>
+    <string name="capture_permission_blocked_title">Accès à la caméra bloqué</string>
+    <string name="capture_permission_blocked_body">Mira a besoin de l\'accès à la caméra pour capturer les images. Activez-le dans les Paramètres du téléphone.</string>
+    <string name="capture_permission_open_settings">Ouvrir les paramètres</string>
+    <string name="capture_torch">Lumière</string>
+    <string name="capture_button">Capturer</string>
+    <string name="capture_capturing">Capture en cours…</string>
+    <string name="capture_captured">Capturé</string>
+    <string name="capture_burst_progress">Rafale %1$d sur %2$d</string>
+    <string name="capture_burst_hold">Tenez stable</string>
+    <string name="capture_burst_kept">%1$d sur %2$d clichés utilisés</string>
+
+    <string name="quality_too_dark">Trop sombre, allumez la lumière</string>
+    <string name="quality_too_bright">Trop lumineux, ajustez la position</string>
+    <string name="quality_too_glare">Trop de reflets, repositionnez</string>
+    <string name="quality_too_blurry">Tenez stable, image floue</string>
+    <string name="quality_somewhat_blurry">Tenez stable, ajustement</string>
+    <string name="quality_good">Qualité d\'image bonne</string>
+
+    <string name="processing_step_color">Ajustement des couleurs…</string>
+    <string name="processing_step_reading">Lecture de l\'image…</string>
+    <string name="processing_step_heatmap">Génération de la carte thermique…</string>
+    <string name="processing_subtitle">Mira analyse l\'image. Cela prend généralement quelques secondes.</string>
+
+    <string name="result_title">Résultat du dépistage</string>
+    <string name="result_positive">Dépistage positif</string>
+    <string name="result_negative">Dépistage négatif</string>
+    <string name="result_inconclusive">Non concluant</string>
+    <string name="result_action_refer">Référer pour traitement</string>
+    <string name="result_action_followup">Suivi dans 3 à 5 ans</string>
+    <string name="result_action_reimage">Veuillez recapturer, confiance trop faible</string>
+    <string name="result_show_heatmap">Afficher la carte thermique</string>
+    <string name="result_hide_heatmap">Masquer la carte thermique</string>
+    <string name="result_play">Lire le résultat</string>
+    <string name="result_stop">Arrêter</string>
+    <string name="result_disagree">Je ne suis pas d\'accord avec ce résultat</string>
+    <string name="result_override_dialog_title">Substitution manuelle</string>
+    <string name="result_override_dialog_body">Selon vous, à quoi ressemble le dépistage ?</string>
+    <string name="result_override_positive">Marquer comme positif</string>
+    <string name="result_override_negative">Marquer comme négatif</string>
+    <string name="result_override_inconclusive">Marquer comme non concluant</string>
+    <string name="result_override_save">Enregistrer la substitution</string>
+    <string name="result_override_cancel">Annuler</string>
+    <string name="result_override_banner">Substitué manuellement par vous</string>
+    <string name="help_dialog_close">Compris</string>
+    <string name="help_heatmap_title">Qu\'est-ce que la carte thermique ?</string>
+    <string name="help_heatmap_body">La superposition colorée montre où Mira a regardé pour prendre sa décision. Les zones lumineuses sont des régions que Mira a jugées importantes. Si la zone lumineuse se trouve sur le col de l\'utérus et correspond à ce que vous voyez comme acétoblanc, le résultat est plus fiable. Si elle est sur le spéculum ou ailleurs, traitez le résultat avec prudence et envisagez de recapturer.</string>
+    <string name="help_confidence_title">Que signifie la confiance ?</string>
+    <string name="help_confidence_body">La confiance indique à quel point Mira est sûre de sa réponse, de 0 à 100 %. Au-dessus de 80 %, c\'est fort. En dessous du seuil que vous définissez dans Paramètres (65 % par défaut), Mira marquera le résultat comme non concluant et demandera une nouvelle capture. Votre jugement clinique compte plus que le chiffre.</string>
+    <string name="result_confidence">Confiance : %1$d%%</string>
+    <string name="result_unavailable">Résultat indisponible</string>
+    <string name="result_heatmap_a11y">Carte thermique d\'attention</string>
+
+    <string name="history_title">Historique</string>
+    <string name="history_empty">Aucun dépistage pour le moment.\nLes résultats apparaîtront ici après chaque capture.</string>
+    <string name="history_label_inconclusive">Non concluant</string>
+    <string name="history_confidence">Confiance %1$d%%</string>
+    <string name="history_patient_id">ID patiente : %1$s</string>
+    <string name="history_detail_title">Détail du dépistage</string>
+    <string name="history_action_delete">Supprimer l\'enregistrement</string>
+    <string name="history_delete_confirm_title">Supprimer cet enregistrement ?</string>
+    <string name="history_delete_confirm_body">Cela supprime définitivement l\'enregistrement et toute image enregistrée.</string>
+    <string name="history_delete_confirm_yes">Supprimer</string>
+    <string name="history_delete_confirm_cancel">Annuler</string>
+    <string name="history_no_image">Aucune image enregistrée pour cet enregistrement.</string>
+    <string name="history_action_clear_all">Tout effacer</string>
+    <string name="history_clear_all_confirm_title">Supprimer tous les dépistages ?</string>
+    <string name="history_clear_all_confirm_body">Cela supprime définitivement tous les enregistrements de dépistage et toutes les images enregistrées. Cela ne peut pas être annulé.</string>
+    <string name="history_clear_all_confirm_yes">Tout supprimer</string>
+
+    <string name="settings_title">Paramètres</string>
+    <string name="settings_section_privacy">Confidentialité</string>
+    <string name="settings_section_threshold">Seuil de confiance</string>
+    <string name="settings_section_about">À propos</string>
+    <string name="settings_section_language">Langue</string>
+    <string name="settings_language_system">Langue du système</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_language_es">Español</string>
+    <string name="settings_language_pt">Português</string>
+    <string name="settings_language_fr">Français</string>
+    <string name="settings_language_sw">Kiswahili</string>
+    <string name="settings_language_ha">Hausa</string>
+    <string name="settings_language_yo">Yorùbá</string>
+    <string name="settings_language_ig">Igbo</string>
+    <string name="settings_language_lg">Luganda</string>
+    <string name="settings_language_qu">Runa Simi</string>
+    <string name="settings_save_images">Conserver les images de dépistage sur ce téléphone</string>
+    <string name="settings_save_images_body">Lorsque désactivé, seul le résultat est conservé, aucune image de patiente ne reste sur le téléphone.</string>
+    <string name="settings_section_developer">Développeur (débogage uniquement)</string>
+    <string name="settings_validity_gate">Vérification de validité du col</string>
+    <string name="settings_validity_gate_body">Refuser les images qui ne ressemblent pas à du tissu cervical (une main, un mur, etc.) avant la classification. Réinitialisé à ACTIVÉ à chaque lancement de l\'app, substitution de session uniquement pour les tests. Ne peut pas être désactivé dans les versions de production.</string>
+    <string name="settings_threshold_body">Sous ce seuil de confiance, Mira marquera le résultat comme non concluant et demandera une nouvelle capture.</string>
+    <string name="settings_threshold_value">%1$d%%</string>
+    <string name="settings_version">Version %1$s</string>
+    <string name="settings_disclaimer">Mira est une aide au dépistage, pas un diagnostic. Les décisions cliniques finales relèvent du professionnel formé.</string>
+</resources>

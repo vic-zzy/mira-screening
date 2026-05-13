@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mira</string>
+    <string name="app_tagline">Visão especializada, em qualquer lugar</string>
+
+    <string name="action_back">Voltar</string>
+    <string name="action_done">Concluído</string>
+    <string name="action_next">Próximo</string>
+    <string name="action_skip">Pular</string>
+
+    <string name="home_start">Iniciar rastreamento</string>
+    <string name="home_history">Histórico</string>
+    <string name="home_settings">Ajustes</string>
+
+    <string name="onboarding_p1_title">Ajuda especializada no seu bolso</string>
+    <string name="onboarding_p1_body">Mira é uma ferramenta de rastreamento que analisa a imagem do colo do útero com você e sugere se a paciente deve ser encaminhada. Seu julgamento clínico continua no comando.</string>
+    <string name="onboarding_p2_title">Três passos simples</string>
+    <string name="onboarding_p2_body">Prepare a paciente e toque uma vez. Mira tira três fotos rápidas seguidas, escolhe a mais nítida e mostra uma sugestão com uma pontuação de confiança. Você decide o que fazer em seguida.</string>
+    <string name="onboarding_p3_title">Sua privacidade vem primeiro</string>
+    <string name="onboarding_p3_body">As imagens das pacientes permanecem neste telefone. Mira nunca as envia a lugar nenhum, a menos que você escolha.</string>
+    <string name="onboarding_get_started">Começar</string>
+
+    <string name="precapture_title">Prepare para capturar</string>
+    <string name="precapture_instruction">Toque em cada passo conforme concluir.</string>
+    <string name="precapture_step_speculum">Espéculo inserido</string>
+    <string name="precapture_step_acetic">Ácido acético aplicado</string>
+    <string name="precapture_timer_idle">A espera de 60 s começa após o ácido acético</string>
+    <string name="precapture_timer_running">Aguardando 60 s pela reação acetobranca…</string>
+    <string name="precapture_timer_done">Espera concluída</string>
+    <string name="precapture_continue">Continuar para captura</string>
+    <string name="precapture_continue_disabled">Conclua todos os passos para continuar</string>
+    <string name="precapture_seconds_left">%1$d s</string>
+    <string name="precapture_patient_id_label">ID da paciente (opcional)</string>
+    <string name="precapture_patient_id_hint">ex. 2026-04-26-001</string>
+
+    <string name="capture_permission_title">Mira precisa da câmera</string>
+    <string name="capture_permission_body">Mira usa a câmera para capturar a imagem do colo do útero. A imagem permanece neste telefone, a menos que você escolha sincronizar.</string>
+    <string name="capture_permission_allow">Permitir câmera</string>
+    <string name="capture_permission_blocked_title">Acesso à câmera bloqueado</string>
+    <string name="capture_permission_blocked_body">Mira precisa de acesso à câmera para capturar imagens. Ative isso nos Ajustes do telefone.</string>
+    <string name="capture_permission_open_settings">Abrir ajustes</string>
+    <string name="capture_torch">Luz</string>
+    <string name="capture_button">Capturar</string>
+    <string name="capture_capturing">Capturando…</string>
+    <string name="capture_captured">Capturado</string>
+    <string name="capture_burst_progress">Rajada %1$d de %2$d</string>
+    <string name="capture_burst_hold">Segure firme</string>
+    <string name="capture_burst_kept">Usadas %1$d de %2$d capturas</string>
+
+    <string name="quality_too_dark">Muito escuro, acenda a luz</string>
+    <string name="quality_too_bright">Muito claro, ajuste a posição</string>
+    <string name="quality_too_glare">Muito reflexo, reposicione</string>
+    <string name="quality_too_blurry">Segure firme, imagem borrada</string>
+    <string name="quality_somewhat_blurry">Segure estável, ajustando</string>
+    <string name="quality_good">Qualidade da imagem boa</string>
+
+    <string name="processing_step_color">Ajustando cor…</string>
+    <string name="processing_step_reading">Lendo a imagem…</string>
+    <string name="processing_step_heatmap">Desenhando o mapa de calor…</string>
+    <string name="processing_subtitle">Mira está analisando a imagem. Geralmente leva alguns segundos.</string>
+
+    <string name="result_title">Resultado do rastreamento</string>
+    <string name="result_positive">Rastreamento positivo</string>
+    <string name="result_negative">Rastreamento negativo</string>
+    <string name="result_inconclusive">Inconclusivo</string>
+    <string name="result_action_refer">Encaminhar para tratamento</string>
+    <string name="result_action_followup">Acompanhamento em 3 a 5 anos</string>
+    <string name="result_action_reimage">Por favor recapture, confiança muito baixa</string>
+    <string name="result_show_heatmap">Mostrar mapa de calor</string>
+    <string name="result_hide_heatmap">Ocultar mapa de calor</string>
+    <string name="result_play">Reproduzir resultado</string>
+    <string name="result_stop">Parar</string>
+    <string name="result_disagree">Discordo deste resultado</string>
+    <string name="result_override_dialog_title">Anulação manual</string>
+    <string name="result_override_dialog_body">Como você avalia o rastreamento?</string>
+    <string name="result_override_positive">Marcar como positivo</string>
+    <string name="result_override_negative">Marcar como negativo</string>
+    <string name="result_override_inconclusive">Marcar como inconclusivo</string>
+    <string name="result_override_save">Salvar anulação</string>
+    <string name="result_override_cancel">Cancelar</string>
+    <string name="result_override_banner">Anulado manualmente por você</string>
+    <string name="help_dialog_close">Entendido</string>
+    <string name="help_heatmap_title">O que é o mapa de calor?</string>
+    <string name="help_heatmap_body">A sobreposição colorida mostra onde Mira olhou ao tomar sua decisão. Áreas brilhantes são regiões que Mira considerou importantes. Se a área brilhante coincide com o colo do útero e com o que você vê como acetobranco, o resultado é mais confiável. Se cai sobre o espéculo ou outro lugar, trate o resultado com cuidado e considere recapturar.</string>
+    <string name="help_confidence_title">O que significa a confiança?</string>
+    <string name="help_confidence_body">A confiança é quanto Mira está certa de sua resposta, de 0 a 100%. Acima de 80% é forte. Abaixo do limite que você define em Ajustes (65% por padrão), Mira marcará o resultado como inconclusivo e pedirá uma nova captura. Seu julgamento clínico importa mais que o número.</string>
+    <string name="result_confidence">Confiança: %1$d%%</string>
+    <string name="result_unavailable">Resultado indisponível</string>
+    <string name="result_heatmap_a11y">Mapa de calor de atenção</string>
+
+    <string name="history_title">Histórico</string>
+    <string name="history_empty">Ainda não há rastreamentos.\nOs resultados aparecerão aqui após cada captura.</string>
+    <string name="history_label_inconclusive">Inconclusivo</string>
+    <string name="history_confidence">Confiança %1$d%%</string>
+    <string name="history_patient_id">ID da paciente: %1$s</string>
+    <string name="history_detail_title">Detalhes do rastreamento</string>
+    <string name="history_action_delete">Excluir registro</string>
+    <string name="history_delete_confirm_title">Excluir este registro?</string>
+    <string name="history_delete_confirm_body">Isto remove permanentemente o registro e qualquer imagem salva.</string>
+    <string name="history_delete_confirm_yes">Excluir</string>
+    <string name="history_delete_confirm_cancel">Cancelar</string>
+    <string name="history_no_image">Nenhuma imagem salva para este registro.</string>
+    <string name="history_action_clear_all">Limpar tudo</string>
+    <string name="history_clear_all_confirm_title">Excluir todos os rastreamentos?</string>
+    <string name="history_clear_all_confirm_body">Isto remove permanentemente todos os registros de rastreamento e quaisquer imagens salvas. Não pode ser desfeito.</string>
+    <string name="history_clear_all_confirm_yes">Excluir tudo</string>
+
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_section_privacy">Privacidade</string>
+    <string name="settings_section_threshold">Limite de confiança</string>
+    <string name="settings_section_about">Sobre</string>
+    <string name="settings_section_language">Idioma</string>
+    <string name="settings_language_system">Idioma do sistema</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_language_es">Español</string>
+    <string name="settings_language_pt">Português</string>
+    <string name="settings_language_fr">Français</string>
+    <string name="settings_language_sw">Kiswahili</string>
+    <string name="settings_language_ha">Hausa</string>
+    <string name="settings_language_yo">Yorùbá</string>
+    <string name="settings_language_ig">Igbo</string>
+    <string name="settings_language_lg">Luganda</string>
+    <string name="settings_language_qu">Runa Simi</string>
+    <string name="settings_save_images">Salvar imagens de rastreamento neste telefone</string>
+    <string name="settings_save_images_body">Quando desligado, apenas o resultado é salvo, nenhuma imagem da paciente permanece no telefone.</string>
+    <string name="settings_section_developer">Desenvolvedor (apenas depuração)</string>
+    <string name="settings_validity_gate">Verificação de validade cervical</string>
+    <string name="settings_validity_gate_body">Recusar imagens que não pareçam tecido cervical (uma mão, uma parede, etc.) antes de classificar. Reinicia para LIGADO em cada início do app, substituição de sessão apenas para testes. Não pode ser desativado em compilações de produção.</string>
+    <string name="settings_threshold_body">Abaixo desta confiança, Mira marcará o resultado como inconclusivo e pedirá uma nova captura.</string>
+    <string name="settings_threshold_value">%1$d%%</string>
+    <string name="settings_version">Versão %1$s</string>
+    <string name="settings_disclaimer">Mira é uma assistência ao rastreamento, não um diagnóstico. As decisões clínicas finais são responsabilidade do profissional treinado.</string>
+</resources>

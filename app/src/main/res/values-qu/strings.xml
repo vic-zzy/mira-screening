@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Quechua (qu, Southern Cusco-Collao variant), machine-translated, pending native medical-language review.
+     Medical terms borrow heavily from Spanish, which reflects how Quechua-speaking
+     health workers actually describe these procedures in clinical practice. -->
+<resources>
+    <string name="app_name">Mira</string>
+    <string name="app_tagline">Yachaq qhawayniyuq, maypipas</string>
+
+    <string name="action_back">Kutiy</string>
+    <string name="action_done">Tukurun</string>
+    <string name="action_next">Qatiq</string>
+    <string name="action_skip">Saqiy</string>
+
+    <string name="home_start">Qhawayta qallariy</string>
+    <string name="home_history">Ñawpaq kawsay</string>
+    <string name="home_settings">Allichaykuna</string>
+
+    <string name="onboarding_p1_title">Yachaq yanapay bolsillollaykipi</string>
+    <string name="onboarding_p1_body">Mira huk qhaway llank\'ana, cuello uterino siq\'ita qhawan qanwan kuska, hinaspataq nin paciente kachayta munanchuchus chayta. Qan kachkanki kamachiyniyuq.</string>
+    <string name="onboarding_p2_title">Kimsa atinalla ruway</string>
+    <string name="onboarding_p2_body">Pacienteta wakichiy hinaspa huk kutilla ñit\'iy. Mira utqayllata kimsa siq\'ita hurqun, aswan sumaqta akllan, hinaspataq qhawayta qhawachisunki nisqa qillqayuqta. Qan kamachinki imatachus ruwanaykita.</string>
+    <string name="onboarding_p3_title">Pakasqa willanaykiqa ñawpaq</string>
+    <string name="onboarding_p3_body">Pacientekunaq siq\'inkunaqa kay celularpi qhipanqanku. Mira manapuni kachkachinmanchu mayman akllaspaykiwanchu.</string>
+    <string name="onboarding_get_started">Qallariy</string>
+
+    <string name="precapture_title">Siq\'inapaq wakichiy</string>
+    <string name="precapture_instruction">Sapanka ruwayta tukuspayki ñit\'iy.</string>
+    <string name="precapture_step_speculum">Speculum churasqa</string>
+    <string name="precapture_step_acetic">Acetic acid churasqa</string>
+    <string name="precapture_timer_idle">60 segundo suyay qallarinqa acetic acid churasqa qhipata</string>
+    <string name="precapture_timer_running">60 segundo suyachkan acetowhite kutichinanpaq…</string>
+    <string name="precapture_timer_done">Suyay tukurun</string>
+    <string name="precapture_continue">Siq\'inaman riy</string>
+    <string name="precapture_continue_disabled">Llapan ruwayta tukuy riypaq</string>
+    <string name="precapture_seconds_left">%1$ds</string>
+    <string name="precapture_patient_id_label">Pacienteq ID-nin (mana kamachisqachu)</string>
+    <string name="precapture_patient_id_hint">rikch\'anan 2026-04-26-001</string>
+
+    <string name="capture_permission_title">Mira kámaratam munan</string>
+    <string name="capture_permission_body">Mira kámaratawan siq\'inta cuello uterinopi hurqun. Siq\'iqa kay celularpi qhipanqa, mana akllaspaykichu kachayta.</string>
+    <string name="capture_permission_allow">Kámarata saqiy</string>
+    <string name="capture_permission_blocked_title">Kámaraman yaykuy harkasqa</string>
+    <string name="capture_permission_blocked_body">Mira kámaratam munan siq\'ita hurqunanpaq. Ama hina kachkaspa allichapuy celularniykiq Allichaykuna nisqanpi.</string>
+    <string name="capture_permission_open_settings">Allichaykunata kichay</string>
+    <string name="capture_torch">K\'anchay</string>
+    <string name="capture_button">Siq\'iy</string>
+    <string name="capture_capturing">Siq\'ichkan…</string>
+    <string name="capture_captured">Siq\'isqa</string>
+    <string name="capture_burst_progress">Siq\'i %1$d %2$dmanta</string>
+    <string name="capture_burst_hold">Allinta hap\'iy</string>
+    <string name="capture_burst_kept">%1$d %2$dmanta llamk\'achisqa</string>
+
+    <string name="quality_too_dark">Ancha tutayasqa, k\'anchayta hap\'ichiy</string>
+    <string name="quality_too_bright">Ancha k\'anchaq, kuyuy</string>
+    <string name="quality_too_glare">Ancha lliphipiq, kuyuy</string>
+    <string name="quality_too_blurry">Allinta hap\'iy, siq\'i mana sut\'inchu</string>
+    <string name="quality_somewhat_blurry">Allinta hap\'iy, allichachkan</string>
+    <string name="quality_good">Siq\'i sumaq kachkan</string>
+
+    <string name="processing_step_color">Llimp\'ita allichachkan…</string>
+    <string name="processing_step_reading">Siq\'ita ñawichkan…</string>
+    <string name="processing_step_heatmap">Q\'uñi mapata siq\'ichkan…</string>
+    <string name="processing_subtitle">Mira siq\'ita qhawachkan. Kayqa pisi segundollatam apan.</string>
+
+    <string name="result_title">Qhaway tukuy</string>
+    <string name="result_positive">Qhaway sut\'inchasqa</string>
+    <string name="result_negative">Qhaway mana sut\'inchasqachu</string>
+    <string name="result_inconclusive">Mana sut\'iqchu</string>
+    <string name="result_action_refer">Hampikuypaq kachay</string>
+    <string name="result_action_followup">3-5 watapi qatiy</string>
+    <string name="result_action_reimage">Ama hina kachkaspa watiqmanta siq\'iy, confianza pisillan</string>
+    <string name="result_show_heatmap">Q\'uñi mapata rikuchiy</string>
+    <string name="result_hide_heatmap">Q\'uñi mapata pakay</string>
+    <string name="result_play">Tukuyta uyariy</string>
+    <string name="result_stop">Sayariy</string>
+    <string name="result_disagree">Mana hawkikunichu kay tukuywan</string>
+    <string name="result_override_dialog_title">Maki tikray</string>
+    <string name="result_override_dialog_body">Imayna qhaway qanpaqqa?</string>
+    <string name="result_override_positive">Sut\'inchasqa kanqa</string>
+    <string name="result_override_negative">Mana sut\'inchasqachu kanqa</string>
+    <string name="result_override_inconclusive">Mana sut\'iqchu kanqa</string>
+    <string name="result_override_save">Tikrayta waqaychay</string>
+    <string name="result_override_cancel">Saqiy</string>
+    <string name="result_override_banner">Qan tikraranki</string>
+    <string name="help_dialog_close">Hap\'inim</string>
+    <string name="help_heatmap_title">Imataq q\'uñi mapa?</string>
+    <string name="help_heatmap_body">Llimp\'iyuq pampa rikuchin maypichus Mira qhawasqanta kamachiy ruwasqanpi. K\'anchaq pampakuna Mira allinpaq qhawasqan partikuna kanku. K\'anchaq pampa cuello uterinopi tinkuptinqa hinaspa qan acetowhite hina rikusqaykiwan tinkuptinqa, tukuy aswan iñinapaq kanqa. Speculumpi utaq waq partepi tinkuptinqa, tukuyta cuidadowanña hap\'inay hinaspa watiqmanta siq\'inaykipaq yuyaymanay.</string>
+    <string name="help_confidence_title">Imatataq confianza nin?</string>
+    <string name="help_confidence_body">Confianza Mira kutichinanpi hayk\'a iñisqa kasqantam, 0-manta 100%%-kama. 80%%-manta hawanqa allinmi. Allichaykunapi churasqayki umbralmanta urapi (kachisqa 65%%), Mira tukuyta nisqa mana sut\'iqchu hina churanqa hinaspa watiqmanta siq\'iyta mañasunki. Médico yachayniykiqa aswan allinmi numerumantaqa.</string>
+    <string name="result_confidence">Confianza: %1$d%%</string>
+    <string name="result_unavailable">Tukuy mana kanchu</string>
+    <string name="result_heatmap_a11y">Atención q\'uñi mapa</string>
+
+    <string name="history_title">Ñawpaq kawsay</string>
+    <string name="history_empty">Manaraq qhawaykunachu kanchu.\nTukuykuna kaypi rikhurinqaku sapanka siq\'i qhipanta.</string>
+    <string name="history_label_inconclusive">Mana sut\'iqchu</string>
+    <string name="history_confidence">Confianza %1$d%%</string>
+    <string name="history_patient_id">Pacienteq ID-nin: %1$s</string>
+    <string name="history_detail_title">Qhaway sut\'inchay</string>
+    <string name="history_action_delete">Qillqayta pichay</string>
+    <string name="history_delete_confirm_title">Kay qillqayta pichay?</string>
+    <string name="history_delete_confirm_body">Kayqa qillqayta hinaspa waqaychasqa siq\'itapas wiñaypaq pichanqa.</string>
+    <string name="history_delete_confirm_yes">Pichay</string>
+    <string name="history_delete_confirm_cancel">Saqiy</string>
+    <string name="history_no_image">Manam kay qillqaypaq waqaychasqa siq\'i kanchu.</string>
+    <string name="history_action_clear_all">Llapanta pichay</string>
+    <string name="history_clear_all_confirm_title">Llapan qhawaykunata pichay?</string>
+    <string name="history_clear_all_confirm_body">Kayqa sapanka qhaway qillqayta hinaspa llapan waqaychasqa siq\'ita wiñaypaq pichanqa. Mana kutichikuyta atinkuchu.</string>
+    <string name="history_clear_all_confirm_yes">Llapanta pichay</string>
+
+    <string name="settings_title">Allichaykuna</string>
+    <string name="settings_section_privacy">Pakasqa</string>
+    <string name="settings_section_threshold">Confianzaq umbralin</string>
+    <string name="settings_section_about">Mirasanchikmanta</string>
+    <string name="settings_section_language">Simi</string>
+    <string name="settings_language_system">Sistemaq simin</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_language_es">Español</string>
+    <string name="settings_language_pt">Português</string>
+    <string name="settings_language_fr">Français</string>
+    <string name="settings_language_sw">Kiswahili</string>
+    <string name="settings_language_ha">Hausa</string>
+    <string name="settings_language_yo">Yorùbá</string>
+    <string name="settings_language_ig">Igbo</string>
+    <string name="settings_language_lg">Luganda</string>
+    <string name="settings_language_qu">Runa Simi</string>
+    <string name="settings_save_images">Kay celularpi qhaway siq\'ikunata waqaychay</string>
+    <string name="settings_save_images_body">Wañusqa kachkaqtin, tukuylla waqaychakun, manam pacienteq siq\'in celularpi qhipanqachu.</string>
+    <string name="settings_section_developer">Ruwaq (allichaylla)</string>
+    <string name="settings_validity_gate">Cuello uterinoq chiqaqkayninta qhaway</string>
+    <string name="settings_validity_gate_body">Manaraq akllachkaspa, mana cuello uterino aycha hina rikukuq siq\'ikunata mana hap\'iy (maki, perqa, etc.). Sapa app kichakuy KICHASQA-man kutimun, saliency emulatorpi qhawanapaqlla huk session tikray. Mana wañuchiyta atinchu produccionpi.</string>
+    <string name="settings_threshold_body">Kay confianzaq urapinqa, Mira tukuyta mana sut\'iqchu hina churanqa hinaspa watiqmanta siq\'iyta mañasunki.</string>
+    <string name="settings_threshold_value">%1$d%%</string>
+    <string name="settings_version">%1$s versión</string>
+    <string name="settings_disclaimer">Miraqa qhaway yanapaymi, mana onqoy riqsiykuychu. Tukuy kamachiykunaqa yachaq médicoq ruwananmi.</string>
+</resources>

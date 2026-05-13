@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mira</string>
+    <string name="app_tagline">Vista especializada, donde sea</string>
+
+    <string name="action_back">Atrás</string>
+    <string name="action_done">Listo</string>
+    <string name="action_next">Siguiente</string>
+    <string name="action_skip">Saltar</string>
+
+    <string name="home_start">Iniciar tamizaje</string>
+    <string name="home_history">Historial</string>
+    <string name="home_settings">Ajustes</string>
+
+    <string name="onboarding_p1_title">Ayuda especializada en su bolsillo</string>
+    <string name="onboarding_p1_body">Mira es una herramienta de tamizaje que analiza la imagen del cuello uterino con usted y sugiere si la paciente debe ser referida. Su juicio clínico sigue al mando.</string>
+    <string name="onboarding_p2_title">Tres pasos simples</string>
+    <string name="onboarding_p2_body">Prepare a la paciente y toque una vez. Mira toma tres fotos rápidas seguidas, elige la más nítida y muestra una sugerencia con una puntuación de confianza. Usted decide qué hacer a continuación.</string>
+    <string name="onboarding_p3_title">Su privacidad es lo primero</string>
+    <string name="onboarding_p3_body">Las imágenes de las pacientes se quedan en este teléfono. Mira nunca las envía a ningún lugar a menos que usted lo elija.</string>
+    <string name="onboarding_get_started">Comenzar</string>
+
+    <string name="precapture_title">Prepárese para capturar</string>
+    <string name="precapture_instruction">Toque cada paso al completarlo.</string>
+    <string name="precapture_step_speculum">Espéculo insertado</string>
+    <string name="precapture_step_acetic">Ácido acético aplicado</string>
+    <string name="precapture_timer_idle">La espera de 60 s inicia después del ácido acético</string>
+    <string name="precapture_timer_running">Esperando 60 s para la reacción acetoblanca…</string>
+    <string name="precapture_timer_done">Espera completa</string>
+    <string name="precapture_continue">Continuar a la captura</string>
+    <string name="precapture_continue_disabled">Complete todos los pasos para continuar</string>
+    <string name="precapture_seconds_left">%1$d s</string>
+    <string name="precapture_patient_id_label">ID de paciente (opcional)</string>
+    <string name="precapture_patient_id_hint">ej. 2026-04-26-001</string>
+
+    <string name="capture_permission_title">Mira necesita la cámara</string>
+    <string name="capture_permission_body">Mira usa la cámara para capturar la imagen del cuello uterino. La imagen permanece en este teléfono a menos que usted elija sincronizar.</string>
+    <string name="capture_permission_allow">Permitir cámara</string>
+    <string name="capture_permission_blocked_title">Acceso a la cámara bloqueado</string>
+    <string name="capture_permission_blocked_body">Mira necesita acceso a la cámara para capturar imágenes. Habilítelo en los Ajustes del teléfono.</string>
+    <string name="capture_permission_open_settings">Abrir ajustes</string>
+    <string name="capture_torch">Luz</string>
+    <string name="capture_button">Capturar</string>
+    <string name="capture_capturing">Capturando…</string>
+    <string name="capture_captured">Capturado</string>
+    <string name="capture_burst_progress">Ráfaga %1$d de %2$d</string>
+    <string name="capture_burst_hold">Mantenga firme</string>
+    <string name="capture_burst_kept">Se usaron %1$d de %2$d capturas</string>
+
+    <string name="quality_too_dark">Demasiado oscuro, encienda la luz</string>
+    <string name="quality_too_bright">Demasiado brillante, ajuste la posición</string>
+    <string name="quality_too_glare">Demasiado reflejo, reubique</string>
+    <string name="quality_too_blurry">Mantenga firme, imagen borrosa</string>
+    <string name="quality_somewhat_blurry">Mantenga estable, ajustando</string>
+    <string name="quality_good">La calidad de la imagen es buena</string>
+
+    <string name="processing_step_color">Ajustando color…</string>
+    <string name="processing_step_reading">Leyendo la imagen…</string>
+    <string name="processing_step_heatmap">Dibujando el mapa de calor…</string>
+    <string name="processing_subtitle">Mira está analizando la imagen. Esto suele tomar unos segundos.</string>
+
+    <string name="result_title">Resultado del tamizaje</string>
+    <string name="result_positive">Tamizaje positivo</string>
+    <string name="result_negative">Tamizaje negativo</string>
+    <string name="result_inconclusive">No concluyente</string>
+    <string name="result_action_refer">Referir para tratamiento</string>
+    <string name="result_action_followup">Seguimiento en 3 a 5 años</string>
+    <string name="result_action_reimage">Por favor recapture, confianza muy baja</string>
+    <string name="result_show_heatmap">Mostrar mapa de calor</string>
+    <string name="result_hide_heatmap">Ocultar mapa de calor</string>
+    <string name="result_play">Reproducir resultado</string>
+    <string name="result_stop">Detener</string>
+    <string name="result_disagree">No estoy de acuerdo con este resultado</string>
+    <string name="result_override_dialog_title">Anulación manual</string>
+    <string name="result_override_dialog_body">¿Cómo califica usted el tamizaje?</string>
+    <string name="result_override_positive">Marcar como positivo</string>
+    <string name="result_override_negative">Marcar como negativo</string>
+    <string name="result_override_inconclusive">Marcar como no concluyente</string>
+    <string name="result_override_save">Guardar anulación</string>
+    <string name="result_override_cancel">Cancelar</string>
+    <string name="result_override_banner">Anulado manualmente por usted</string>
+    <string name="help_dialog_close">Entendido</string>
+    <string name="help_heatmap_title">¿Qué es el mapa de calor?</string>
+    <string name="help_heatmap_body">La superposición de colores muestra dónde Mira miró al tomar su decisión. Las áreas brillantes son regiones que Mira consideró importantes. Si el área brillante coincide con el cuello uterino y con lo que usted ve como acetoblanco, el resultado es más confiable. Si cae sobre el espéculo u otro lugar, trate el resultado con precaución y considere recapturar.</string>
+    <string name="help_confidence_title">¿Qué significa la confianza?</string>
+    <string name="help_confidence_body">La confianza es qué tan segura está Mira de su respuesta, de 0 a 100%. Por encima del 80% es fuerte. Por debajo del umbral que usted establece en Ajustes (65% por defecto), Mira marcará el resultado como no concluyente y le pedirá recapturar. Su juicio clínico importa más que el número.</string>
+    <string name="result_confidence">Confianza: %1$d%%</string>
+    <string name="result_unavailable">Resultado no disponible</string>
+    <string name="result_heatmap_a11y">Mapa de calor de atención</string>
+
+    <string name="history_title">Historial</string>
+    <string name="history_empty">Aún no hay tamizajes.\nLos resultados aparecerán aquí después de cada captura.</string>
+    <string name="history_label_inconclusive">No concluyente</string>
+    <string name="history_confidence">Confianza %1$d%%</string>
+    <string name="history_patient_id">ID de paciente: %1$s</string>
+    <string name="history_detail_title">Detalle del tamizaje</string>
+    <string name="history_action_delete">Eliminar registro</string>
+    <string name="history_delete_confirm_title">¿Eliminar este registro?</string>
+    <string name="history_delete_confirm_body">Esto elimina permanentemente el registro y cualquier imagen guardada.</string>
+    <string name="history_delete_confirm_yes">Eliminar</string>
+    <string name="history_delete_confirm_cancel">Cancelar</string>
+    <string name="history_no_image">No hay imagen guardada para este registro.</string>
+    <string name="history_action_clear_all">Borrar todo</string>
+    <string name="history_clear_all_confirm_title">¿Eliminar todos los tamizajes?</string>
+    <string name="history_clear_all_confirm_body">Esto elimina permanentemente todos los registros de tamizaje y cualquier imagen guardada. No se puede deshacer.</string>
+    <string name="history_clear_all_confirm_yes">Eliminar todo</string>
+
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_section_privacy">Privacidad</string>
+    <string name="settings_section_threshold">Umbral de confianza</string>
+    <string name="settings_section_about">Acerca de</string>
+    <string name="settings_section_language">Idioma</string>
+    <string name="settings_language_system">Idioma del sistema</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_language_es">Español</string>
+    <string name="settings_language_pt">Português</string>
+    <string name="settings_language_fr">Français</string>
+    <string name="settings_language_sw">Kiswahili</string>
+    <string name="settings_language_ha">Hausa</string>
+    <string name="settings_language_yo">Yorùbá</string>
+    <string name="settings_language_ig">Igbo</string>
+    <string name="settings_language_lg">Luganda</string>
+    <string name="settings_language_qu">Runa Simi</string>
+    <string name="settings_save_images">Guardar imágenes de tamizaje en este teléfono</string>
+    <string name="settings_save_images_body">Cuando está apagado, solo se guarda el resultado, ninguna imagen de paciente queda en el teléfono.</string>
+    <string name="settings_section_developer">Desarrollador (solo depuración)</string>
+    <string name="settings_validity_gate">Verificación de validez cervical</string>
+    <string name="settings_validity_gate_body">Rechazar imágenes que no parezcan tejido cervical (una mano, una pared, etc.) antes de clasificar. Se reinicia a ON en cada inicio de la app, anulación de sesión solo para pruebas. No se puede desactivar en compilaciones de producción.</string>
+    <string name="settings_threshold_body">Por debajo de esta confianza, Mira marcará el resultado como no concluyente y le pedirá recapturar.</string>
+    <string name="settings_threshold_value">%1$d%%</string>
+    <string name="settings_version">Versión %1$s</string>
+    <string name="settings_disclaimer">Mira es una asistencia para tamizaje, no un diagnóstico. Las decisiones clínicas finales son responsabilidad del proveedor capacitado.</string>
+</resources>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Igbo (ig), machine-translated, pending native medical-language review. -->
+<resources>
+    <string name="app_name">Mira</string>
+    <string name="app_tagline">Ọhụụ ọkachamara, n\'ebe ọ bụla</string>
+
+    <string name="action_back">Laghachi</string>
+    <string name="action_done">Emeela</string>
+    <string name="action_next">Na-eso</string>
+    <string name="action_skip">Wụfee</string>
+
+    <string name="home_start">Bido nyocha</string>
+    <string name="home_history">Akụkọ ihe mere eme</string>
+    <string name="home_settings">Ntọala</string>
+
+    <string name="onboarding_p1_title">Enyemaka ọkachamara n\'akpa gị</string>
+    <string name="onboarding_p1_body">Mira bụ ngwá nyocha nke na-elele foto akpụ nwa mmadụ na gị ma na-atụ aro ma a ga-eziga onye ọrịa. Mkpebi gị nke ahụike ka nọ n\'aka gị.</string>
+    <string name="onboarding_p2_title">Nzọụkwụ atọ dị mfe</string>
+    <string name="onboarding_p2_body">Kwadebe onye ọrịa ma pịa otu ugboro. Mira na-ese foto atọ ozugbo n\'usoro, na-ahọrọ nke kachasị doo anya, ma gosi ndụmọdụ nwere akara ntụkwasị obi. Gị na-ekpebi ihe ị ga-eme ọzọ.</string>
+    <string name="onboarding_p3_title">Nzuzo gị bu ụzọ</string>
+    <string name="onboarding_p3_body">Foto ndị ọrịa na-anọ na ekwentị a. Mira anaghị ezigara ya n\'ebe ọ bụla ma ọ bụrụ na ịhọrọ.</string>
+    <string name="onboarding_get_started">Bido</string>
+
+    <string name="precapture_title">Kwadebe maka ise foto</string>
+    <string name="precapture_instruction">Pịa nzọụkwụ nke ọ bụla ka ị na-emecha.</string>
+    <string name="precapture_step_speculum">Etinyela speculum</string>
+    <string name="precapture_step_acetic">Etinyela acetic acid</string>
+    <string name="precapture_timer_idle">Nche nke sekọnd 60 ga-amalite mgbe e tinyere acetic acid</string>
+    <string name="precapture_timer_running">Na-eche sekọnd 60 maka mmeghachi acetowhite…</string>
+    <string name="precapture_timer_done">Nche emechaala</string>
+    <string name="precapture_continue">Gaa n\'ihu na ise foto</string>
+    <string name="precapture_continue_disabled">Mechaa nzọụkwụ niile iji gaa n\'ihu</string>
+    <string name="precapture_seconds_left">%1$ds</string>
+    <string name="precapture_patient_id_label">ID onye ọrịa (ọ bụghị mkpa)</string>
+    <string name="precapture_patient_id_hint">ọmụmaatụ 2026-04-26-001</string>
+
+    <string name="capture_permission_title">Mira chọrọ igwefoto</string>
+    <string name="capture_permission_body">Mira na-eji igwefoto ese foto akpụ nwa. Foto na-anọ na ekwentị a ma ọ bụrụ na ịhọrọ izite ya.</string>
+    <string name="capture_permission_allow">Kwe ka igwefoto rụọ ọrụ</string>
+    <string name="capture_permission_blocked_title">A gbochiri ohere igwefoto</string>
+    <string name="capture_permission_blocked_body">Mira chọrọ ohere igwefoto iji see foto. Biko gbanye ya na Ntọala ekwentị gị.</string>
+    <string name="capture_permission_open_settings">Mepee ntọala</string>
+    <string name="capture_torch">Ọkụ</string>
+    <string name="capture_button">See foto</string>
+    <string name="capture_capturing">Na-ese foto…</string>
+    <string name="capture_captured">E sere ya</string>
+    <string name="capture_burst_progress">Foto %1$d nke %2$d</string>
+    <string name="capture_burst_hold">Jide ya nkwụsie ike</string>
+    <string name="capture_burst_kept">E jiri %1$d nke %2$d</string>
+
+    <string name="quality_too_dark">Ọchịchịrị karịrị akarị, gbanye ọkụ</string>
+    <string name="quality_too_bright">Ìhè karịrị akarị, gbanwee ọnọdụ</string>
+    <string name="quality_too_glare">Ìhè na-egbu maramara, gbanwee ọnọdụ</string>
+    <string name="quality_too_blurry">Jide ya, foto edoghị anya</string>
+    <string name="quality_somewhat_blurry">Jide ya, na-edozi</string>
+    <string name="quality_good">Foto dị mma</string>
+
+    <string name="processing_step_color">Na-edozi agba…</string>
+    <string name="processing_step_reading">Na-agụ foto…</string>
+    <string name="processing_step_heatmap">Na-ese map okpomọkụ…</string>
+    <string name="processing_subtitle">Mira na-enyocha foto. Nke a na-ewe sekọnd ole na ole.</string>
+
+    <string name="result_title">Nsonaazụ nyocha</string>
+    <string name="result_positive">Nyocha kwadoro</string>
+    <string name="result_negative">Nyocha emegidere</string>
+    <string name="result_inconclusive">Edozibeghị</string>
+    <string name="result_action_refer">Ziga maka ọgwụgwọ</string>
+    <string name="result_action_followup">Soro ya n\'afọ 3 ruo 5</string>
+    <string name="result_action_reimage">Biko see foto ọzọ, ntụkwasị obi dị obere</string>
+    <string name="result_show_heatmap">Gosi map okpomọkụ</string>
+    <string name="result_hide_heatmap">Zoo map okpomọkụ</string>
+    <string name="result_play">Kpọọ nsonaazụ</string>
+    <string name="result_stop">Kwụsị</string>
+    <string name="result_disagree">Anabataghị m nsonaazụ a</string>
+    <string name="result_override_dialog_title">Mgbanwe nke aka</string>
+    <string name="result_override_dialog_body">Kedu ka nyocha ahụ dị gị?</string>
+    <string name="result_override_positive">Maka dị ka kwadoro</string>
+    <string name="result_override_negative">Maka dị ka emegidere</string>
+    <string name="result_override_inconclusive">Maka dị ka edozibeghị</string>
+    <string name="result_override_save">Chekwaa mgbanwe</string>
+    <string name="result_override_cancel">Kagbuo</string>
+    <string name="result_override_banner">Gị onwe gị gbanwere ya</string>
+    <string name="help_dialog_close">Aghọtara m</string>
+    <string name="help_heatmap_title">Gịnị bụ map okpomọkụ?</string>
+    <string name="help_heatmap_body">Agba dị n\'elu na-egosi ebe Mira lere anya mgbe ọ na-eme mkpebi. Ebe ndị na-egbu maramara bụ mpaghara Mira chere na ọ dị mkpa. Ọ bụrụ na ebe na-egbu maramara dabara n\'akpụ nwa ma kwekọọ na ihe ị na-ahụ dị ka acetowhite, nsonaazụ tụkwasịrị obi karị. Ọ bụrụ na ọ dabara na speculum ma ọ bụ ebe ọzọ, were ihe ahụ ka ihe na-akpasu obi ma chee echiche maka ise foto ọzọ.</string>
+    <string name="help_confidence_title">Gịnị ka ntụkwasị obi pụtara?</string>
+    <string name="help_confidence_body">Ntụkwasị obi bụ otu Mira jiri obi ike maka azịza ya, site na 0 ruo 100%%. N\'elu 80%% siri ike. N\'okpuru ókè ị ga-edebe na Ntọala (na ndabara 65%%), Mira ga-eme ka nsonaazụ bụrụ edozibeghị wee gwa gị ka ị see foto ọzọ. Mkpebi gị nke ahụike dị mkpa karịa ọnụọgụgụ ahụ.</string>
+    <string name="result_confidence">Ntụkwasị obi: %1$d%%</string>
+    <string name="result_unavailable">Nsonaazụ adịghị</string>
+    <string name="result_heatmap_a11y">Map okpomọkụ uche</string>
+
+    <string name="history_title">Akụkọ ihe mere eme</string>
+    <string name="history_empty">Enwebeghị nyocha.\nNsonaazụ ga-apụta ebe a mgbe foto ọ bụla gasịrị.</string>
+    <string name="history_label_inconclusive">Edozibeghị</string>
+    <string name="history_confidence">Ntụkwasị obi %1$d%%</string>
+    <string name="history_patient_id">ID onye ọrịa: %1$s</string>
+    <string name="history_detail_title">Nkọwa nyocha</string>
+    <string name="history_action_delete">Hichapụ ndekọ</string>
+    <string name="history_delete_confirm_title">Hichapụ ndekọ a?</string>
+    <string name="history_delete_confirm_body">Nke a na-ewepụ ndekọ na foto ọ bụla echekwara kpamkpam.</string>
+    <string name="history_delete_confirm_yes">Hichapụ</string>
+    <string name="history_delete_confirm_cancel">Kagbuo</string>
+    <string name="history_no_image">Enweghị foto echekwara maka ndekọ a.</string>
+    <string name="history_action_clear_all">Hichapụ niile</string>
+    <string name="history_clear_all_confirm_title">Hichapụ nyocha niile?</string>
+    <string name="history_clear_all_confirm_body">Nke a na-ewepụ ndekọ nyocha ọ bụla na foto ọ bụla echekwara kpamkpam. Enweghị ike ịkagbu ya.</string>
+    <string name="history_clear_all_confirm_yes">Hichapụ niile</string>
+
+    <string name="settings_title">Ntọala</string>
+    <string name="settings_section_privacy">Nzuzo</string>
+    <string name="settings_section_threshold">Ókè ntụkwasị obi</string>
+    <string name="settings_section_about">Maka</string>
+    <string name="settings_section_language">Asụsụ</string>
+    <string name="settings_language_system">Asụsụ usoro</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_language_es">Español</string>
+    <string name="settings_language_pt">Português</string>
+    <string name="settings_language_fr">Français</string>
+    <string name="settings_language_sw">Kiswahili</string>
+    <string name="settings_language_ha">Hausa</string>
+    <string name="settings_language_yo">Yorùbá</string>
+    <string name="settings_language_ig">Igbo</string>
+    <string name="settings_language_lg">Luganda</string>
+    <string name="settings_language_qu">Runa Simi</string>
+    <string name="settings_save_images">Chekwaa foto nyocha n\'ekwentị a</string>
+    <string name="settings_save_images_body">Mgbe a gbanyụrụ ya, naanị nsonaazụ ka echekwara, enweghị foto onye ọrịa ga-anọ na ekwentị.</string>
+    <string name="settings_section_developer">Onye mmepe (ngwa nrụzi naanị)</string>
+    <string name="settings_validity_gate">Nlele iziokwu akpụ nwa</string>
+    <string name="settings_validity_gate_body">Jụ foto ndị na-adịghị ka anụ akpụ nwa (aka, mgbidi, wdg.) tupu nkewa. Ọ na-alaghachi ka GBANYỌRỌ na nke ọ bụla mgbe ngwa malitere, mgbanwe nke nnọkọ naanị maka ịnwale saliency na emulator. Enweghị ike ịgbanyụ ya na nrụpụta.</string>
+    <string name="settings_threshold_body">N\'okpuru ntụkwasị obi a, Mira ga-eme ka nsonaazụ bụrụ edozibeghị wee gwa gị ka ị see foto ọzọ.</string>
+    <string name="settings_threshold_value">%1$d%%</string>
+    <string name="settings_version">Ụdị %1$s</string>
+    <string name="settings_disclaimer">Mira bụ enyemaka nyocha, ọ bụghị nchọpụta ọrịa. Mkpebi ahụike nke ikpeazụ bụ ibu ọrụ onye ọrụ ahụike a zụrụ azụ.</string>
+</resources>

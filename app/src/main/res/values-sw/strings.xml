@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Swahili (sw), machine-translated, pending native medical-language review. -->
+<resources>
+    <string name="app_name">Mira</string>
+    <string name="app_tagline">Mwonekano wa mtaalamu, popote pale</string>
+
+    <string name="action_back">Rudi</string>
+    <string name="action_done">Imekamilika</string>
+    <string name="action_next">Endelea</string>
+    <string name="action_skip">Ruka</string>
+
+    <string name="home_start">Anza uchunguzi</string>
+    <string name="home_history">Historia</string>
+    <string name="home_settings">Mipangilio</string>
+
+    <string name="onboarding_p1_title">Msaada wa kitaalamu mfukoni mwako</string>
+    <string name="onboarding_p1_body">Mira ni zana ya uchunguzi inayoangalia picha ya mlango wa kizazi pamoja nawe na kupendekeza kama mgonjwa apelekwe kwa mtaalamu. Maamuzi ya kimatibabu yanabaki mikononi mwako.</string>
+    <string name="onboarding_p2_title">Hatua tatu rahisi</string>
+    <string name="onboarding_p2_body">Mwandae mgonjwa na ubonyeze mara moja. Mira huchukua picha tatu za haraka mfululizo, huchagua iliyo wazi zaidi, na huonyesha pendekezo lenye alama ya uhakika. Wewe unaamua nini cha kufanya baadaye.</string>
+    <string name="onboarding_p3_title">Faragha yako kwanza</string>
+    <string name="onboarding_p3_body">Picha za wagonjwa zinabaki kwenye simu hii. Mira haitumi popote isipokuwa kama umechagua kufanya hivyo.</string>
+    <string name="onboarding_get_started">Anza</string>
+
+    <string name="precapture_title">Andaa kupiga picha</string>
+    <string name="precapture_instruction">Bonyeza kila hatua unapomaliza.</string>
+    <string name="precapture_step_speculum">Speculum imewekwa</string>
+    <string name="precapture_step_acetic">Asidi asetiki imepakwa</string>
+    <string name="precapture_timer_idle">Subira ya sekunde 60 huanza baada ya asidi asetiki</string>
+    <string name="precapture_timer_running">Inasubiri sekunde 60 kwa mmenyuko wa acetowhite…</string>
+    <string name="precapture_timer_done">Subira imekamilika</string>
+    <string name="precapture_continue">Endelea kupiga picha</string>
+    <string name="precapture_continue_disabled">Maliza hatua zote ili kuendelea</string>
+    <string name="precapture_seconds_left">%1$ds</string>
+    <string name="precapture_patient_id_label">Kitambulisho cha mgonjwa (si lazima)</string>
+    <string name="precapture_patient_id_hint">k.m. 2026-04-26-001</string>
+
+    <string name="capture_permission_title">Mira inahitaji kamera</string>
+    <string name="capture_permission_body">Mira hutumia kamera kupiga picha ya mlango wa kizazi. Picha inabaki kwenye simu hii isipokuwa uchague kusawazisha.</string>
+    <string name="capture_permission_allow">Ruhusu kamera</string>
+    <string name="capture_permission_blocked_title">Ufikiaji wa kamera umezuiwa</string>
+    <string name="capture_permission_blocked_body">Mira inahitaji ruhusa ya kamera kupiga picha. Tafadhali iwashe katika Mipangilio ya simu yako.</string>
+    <string name="capture_permission_open_settings">Fungua mipangilio</string>
+    <string name="capture_torch">Mwanga</string>
+    <string name="capture_button">Piga picha</string>
+    <string name="capture_capturing">Inapiga picha…</string>
+    <string name="capture_captured">Imepigwa</string>
+    <string name="capture_burst_progress">Picha %1$d kati ya %2$d</string>
+    <string name="capture_burst_hold">Shikilia imara</string>
+    <string name="capture_burst_kept">Zimetumika picha %1$d kati ya %2$d</string>
+
+    <string name="quality_too_dark">Giza sana, washa mwanga</string>
+    <string name="quality_too_bright">Mwanga mwingi, sahihisha mahali</string>
+    <string name="quality_too_glare">Mng\'aro mwingi, badilisha mahali</string>
+    <string name="quality_too_blurry">Shikilia imara, picha ina ukungu</string>
+    <string name="quality_somewhat_blurry">Shikilia imara, inarekebisha</string>
+    <string name="quality_good">Ubora wa picha ni mzuri</string>
+
+    <string name="processing_step_color">Inarekebisha rangi…</string>
+    <string name="processing_step_reading">Inasoma picha…</string>
+    <string name="processing_step_heatmap">Inachora ramani ya joto…</string>
+    <string name="processing_subtitle">Mira inachambua picha. Hii kawaida huchukua sekunde chache.</string>
+
+    <string name="result_title">Matokeo ya uchunguzi</string>
+    <string name="result_positive">Uchunguzi chanya</string>
+    <string name="result_negative">Uchunguzi hasi</string>
+    <string name="result_inconclusive">Haijahitimishwa</string>
+    <string name="result_action_refer">Mpeleke kwa matibabu</string>
+    <string name="result_action_followup">Fuatilia ndani ya miaka 3 hadi 5</string>
+    <string name="result_action_reimage">Tafadhali piga picha tena, uhakika ni mdogo sana</string>
+    <string name="result_show_heatmap">Onyesha ramani ya joto</string>
+    <string name="result_hide_heatmap">Ficha ramani ya joto</string>
+    <string name="result_play">Cheza matokeo</string>
+    <string name="result_stop">Simamisha</string>
+    <string name="result_disagree">Sikubaliani na matokeo haya</string>
+    <string name="result_override_dialog_title">Badilisha mwenyewe</string>
+    <string name="result_override_dialog_body">Uchunguzi unaonekanaje kwako?</string>
+    <string name="result_override_positive">Weka kama chanya</string>
+    <string name="result_override_negative">Weka kama hasi</string>
+    <string name="result_override_inconclusive">Weka kama haijahitimishwa</string>
+    <string name="result_override_save">Hifadhi mabadiliko</string>
+    <string name="result_override_cancel">Ghairi</string>
+    <string name="result_override_banner">Imebadilishwa nawe mwenyewe</string>
+    <string name="help_dialog_close">Nimeelewa</string>
+    <string name="help_heatmap_title">Ramani ya joto ni nini?</string>
+    <string name="help_heatmap_body">Rangi iliyowekwa juu inaonyesha mahali Mira ilipoangalia ilipotoa uamuzi. Maeneo yenye mwanga ni sehemu ambazo Mira ilidhani ni muhimu. Ikiwa eneo lenye mwanga liko kwenye mlango wa kizazi na linafanana na unachokiona kama acetowhite, matokeo ni ya kuaminika zaidi. Ikiwa liko kwenye speculum au mahali pengine, chukua matokeo kwa tahadhari na fikiria kupiga picha tena.</string>
+    <string name="help_confidence_title">Uhakika unamaanisha nini?</string>
+    <string name="help_confidence_body">Uhakika ni jinsi Mira ilivyo na uhakika kuhusu jibu lake, kutoka 0 hadi 100%%. Zaidi ya 80%% ni nguvu. Chini ya kiwango unachoweka katika Mipangilio (chaguo-msingi ni 65%%), Mira itaweka matokeo kama haijahitimishwa na kukuomba upige picha tena. Maamuzi yako ya kimatibabu ni muhimu zaidi kuliko nambari.</string>
+    <string name="result_confidence">Uhakika: %1$d%%</string>
+    <string name="result_unavailable">Matokeo hayapatikani</string>
+    <string name="result_heatmap_a11y">Ramani ya joto ya umakini</string>
+
+    <string name="history_title">Historia</string>
+    <string name="history_empty">Hakuna uchunguzi bado.\nMatokeo yataonekana hapa baada ya kila picha.</string>
+    <string name="history_label_inconclusive">Haijahitimishwa</string>
+    <string name="history_confidence">Uhakika %1$d%%</string>
+    <string name="history_patient_id">Kitambulisho cha mgonjwa: %1$s</string>
+    <string name="history_detail_title">Maelezo ya uchunguzi</string>
+    <string name="history_action_delete">Futa rekodi</string>
+    <string name="history_delete_confirm_title">Futa rekodi hii?</string>
+    <string name="history_delete_confirm_body">Hii inafuta rekodi na picha yoyote iliyohifadhiwa kabisa.</string>
+    <string name="history_delete_confirm_yes">Futa</string>
+    <string name="history_delete_confirm_cancel">Ghairi</string>
+    <string name="history_no_image">Hakuna picha iliyohifadhiwa kwa rekodi hii.</string>
+    <string name="history_action_clear_all">Futa zote</string>
+    <string name="history_clear_all_confirm_title">Futa uchunguzi wote?</string>
+    <string name="history_clear_all_confirm_body">Hii inafuta kabisa kila rekodi ya uchunguzi na picha zote zilizohifadhiwa. Haiwezi kutenduliwa.</string>
+    <string name="history_clear_all_confirm_yes">Futa zote</string>
+
+    <string name="settings_title">Mipangilio</string>
+    <string name="settings_section_privacy">Faragha</string>
+    <string name="settings_section_threshold">Kiwango cha uhakika</string>
+    <string name="settings_section_about">Kuhusu</string>
+    <string name="settings_section_language">Lugha</string>
+    <string name="settings_language_system">Lugha ya mfumo</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_language_es">Español</string>
+    <string name="settings_language_pt">Português</string>
+    <string name="settings_language_fr">Français</string>
+    <string name="settings_language_sw">Kiswahili</string>
+    <string name="settings_language_ha">Hausa</string>
+    <string name="settings_language_yo">Yorùbá</string>
+    <string name="settings_language_ig">Igbo</string>
+    <string name="settings_language_lg">Luganda</string>
+    <string name="settings_language_qu">Runa Simi</string>
+    <string name="settings_save_images">Hifadhi picha za uchunguzi kwenye simu hii</string>
+    <string name="settings_save_images_body">Inapozimwa, matokeo pekee ndiyo huhifadhiwa, hakuna picha ya mgonjwa inayobaki kwenye simu.</string>
+    <string name="settings_section_developer">Msanidi (urekebishaji tu)</string>
+    <string name="settings_validity_gate">Ukaguzi wa uhalali wa mlango wa kizazi</string>
+    <string name="settings_validity_gate_body">Kataa picha ambazo haziangalii kama tishu za mlango wa kizazi (mkono, ukuta, n.k.) kabla ya uainishaji. Hurudi kuwa IMEWASHWA kila wakati programu inapozinduliwa, ubadilishaji wa kikao tu kwa kupima upekee wa saliency kwenye emulator. Haiwezi kuzimwa katika matoleo ya uzalishaji.</string>
+    <string name="settings_threshold_body">Chini ya uhakika huu, Mira itaweka matokeo kama haijahitimishwa na kukuomba upige picha tena.</string>
+    <string name="settings_threshold_value">%1$d%%</string>
+    <string name="settings_version">Toleo %1$s</string>
+    <string name="settings_disclaimer">Mira ni msaada wa uchunguzi, si utambuzi wa magonjwa. Maamuzi ya mwisho ya kimatibabu ni jukumu la mtoa huduma aliyefunzwa.</string>
+</resources>

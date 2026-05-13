@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hausa (ha), machine-translated, pending native medical-language review. -->
+<resources>
+    <string name="app_name">Mira</string>
+    <string name="app_tagline">Ganin ƙwararre, ko ina</string>
+
+    <string name="action_back">Komawa</string>
+    <string name="action_done">An gama</string>
+    <string name="action_next">Na gaba</string>
+    <string name="action_skip">Tsallake</string>
+
+    <string name="home_start">Fara binciken</string>
+    <string name="home_history">Tarihi</string>
+    <string name="home_settings">Saituna</string>
+
+    <string name="onboarding_p1_title">Taimakon ƙwararre a aljihunka</string>
+    <string name="onboarding_p1_body">Mira na\'urar bincike ce da ke duba hoton mahaifa tare da kai kuma ta ba da shawarar ko a kai mai jinya wajen ƙwararre. Hukuncin likitanci yana hannunka.</string>
+    <string name="onboarding_p2_title">Matakai uku masu sauƙi</string>
+    <string name="onboarding_p2_body">Shirya mai jinya kuma matse sau ɗaya. Mira tana ɗaukar hotuna uku da sauri a jere, ta zaɓi mafi tsabta, kuma ta nuna shawara tare da kima na tabbas. Kai ne ka yanke shawara abin yi na gaba.</string>
+    <string name="onboarding_p3_title">Sirrinka a farko</string>
+    <string name="onboarding_p3_body">Hotunan masu jinya suna kasancewa a wannan wayar. Mira ba ta tura su ko\'ina sai dai idan ka zaɓi haka.</string>
+    <string name="onboarding_get_started">Fara</string>
+
+    <string name="precapture_title">Shirya don ɗaukar hoto</string>
+    <string name="precapture_instruction">Matse kowane mataki yayin da ka gama shi.</string>
+    <string name="precapture_step_speculum">An saka speculum</string>
+    <string name="precapture_step_acetic">An shafa acetic acid</string>
+    <string name="precapture_timer_idle">Jiran daƙiƙa 60 zai fara bayan acetic acid</string>
+    <string name="precapture_timer_running">Ana jiran daƙiƙa 60 don amsa acetowhite…</string>
+    <string name="precapture_timer_done">Jira ya kammala</string>
+    <string name="precapture_continue">Ci gaba zuwa ɗaukar hoto</string>
+    <string name="precapture_continue_disabled">Kammala dukkan matakai don ci gaba</string>
+    <string name="precapture_seconds_left">%1$ds</string>
+    <string name="precapture_patient_id_label">ID na mai jinya (zaɓi)</string>
+    <string name="precapture_patient_id_hint">misali 2026-04-26-001</string>
+
+    <string name="capture_permission_title">Mira na buƙatar kamara</string>
+    <string name="capture_permission_body">Mira na amfani da kamara don ɗaukar hoton mahaifa. Hoton zai kasance a wannan wayar sai dai idan ka zaɓi aikawa.</string>
+    <string name="capture_permission_allow">Bada izinin kamara</string>
+    <string name="capture_permission_blocked_title">An toshe shiga kamara</string>
+    <string name="capture_permission_blocked_body">Mira na buƙatar izinin kamara don ɗaukar hotuna. Don Allah kunna shi a Saituna na wayarka.</string>
+    <string name="capture_permission_open_settings">Buɗe saituna</string>
+    <string name="capture_torch">Haske</string>
+    <string name="capture_button">Ɗauki hoto</string>
+    <string name="capture_capturing">Ana ɗaukar hoto…</string>
+    <string name="capture_captured">An ɗauka</string>
+    <string name="capture_burst_progress">Hoto %1$d daga %2$d</string>
+    <string name="capture_burst_hold">Riƙe da kyau</string>
+    <string name="capture_burst_kept">An yi amfani da %1$d daga %2$d</string>
+
+    <string name="quality_too_dark">Duhu sosai, kunna haske</string>
+    <string name="quality_too_bright">Haske sosai, gyara wuri</string>
+    <string name="quality_too_glare">Haske mai yawa, sake gyara wuri</string>
+    <string name="quality_too_blurry">Riƙe sosai, hoton ba shi da tsabta</string>
+    <string name="quality_somewhat_blurry">Riƙe sosai, ana gyara</string>
+    <string name="quality_good">Ingancin hoton ya yi kyau</string>
+
+    <string name="processing_step_color">Ana gyara launi…</string>
+    <string name="processing_step_reading">Ana karatun hoto…</string>
+    <string name="processing_step_heatmap">Ana zana taswirar zafin…</string>
+    <string name="processing_subtitle">Mira na nazarin hoton. Wannan kan ɗauki daƙiƙa kaɗan.</string>
+
+    <string name="result_title">Sakamakon binciken</string>
+    <string name="result_positive">Binciken tabbatacce</string>
+    <string name="result_negative">Binciken mara tabbas</string>
+    <string name="result_inconclusive">Bai tabbata ba</string>
+    <string name="result_action_refer">Aika don jinya</string>
+    <string name="result_action_followup">Sake duba bayan shekaru 3 zuwa 5</string>
+    <string name="result_action_reimage">Don Allah sake ɗaukar hoto, tabbas yana da ƙanƙanci</string>
+    <string name="result_show_heatmap">Nuna taswirar zafin</string>
+    <string name="result_hide_heatmap">Ɓoye taswirar zafin</string>
+    <string name="result_play">Buga sakamako</string>
+    <string name="result_stop">Tsaya</string>
+    <string name="result_disagree">Ban yarda da wannan sakamakon ba</string>
+    <string name="result_override_dialog_title">Canji da hannu</string>
+    <string name="result_override_dialog_body">Yaya binciken yake a wajenka?</string>
+    <string name="result_override_positive">Yi alama tabbatacce</string>
+    <string name="result_override_negative">Yi alama mara tabbas</string>
+    <string name="result_override_inconclusive">Yi alama bai tabbata ba</string>
+    <string name="result_override_save">Ajiye canji</string>
+    <string name="result_override_cancel">Soke</string>
+    <string name="result_override_banner">An canza shi da kanka</string>
+    <string name="help_dialog_close">Na fahimta</string>
+    <string name="help_heatmap_title">Mene ne taswirar zafin?</string>
+    <string name="help_heatmap_body">Launi da aka rufe yana nuna inda Mira ta duba lokacin yanke shawara. Wuraren da suke haske sune yankunan da Mira ta ɗauka muhimmanci. Idan wurin haske ya faɗi a kan mahaifa kuma ya yi daidai da abin da kake gani a matsayin acetowhite, sakamakon ya fi amincewa. Idan ya faɗi a kan speculum ko wani wuri, ka yi taka tsantsan da sakamakon kuma ka yi tunanin sake ɗaukar hoto.</string>
+    <string name="help_confidence_title">Mene ne ma\'anar tabbas?</string>
+    <string name="help_confidence_body">Tabbas shine yadda Mira take da tabbas game da amsarta, daga 0 zuwa 100%%. Sama da 80%% yana da ƙarfi. Ƙasa da matakin da kuka saita a Saituna (tsoho 65%%), Mira za ta sanya sakamakon a matsayin bai tabbata ba kuma ta nemi sake hoto. Hukuncinka na likitanci yana da muhimmanci fiye da lambar.</string>
+    <string name="result_confidence">Tabbas: %1$d%%</string>
+    <string name="result_unavailable">Sakamako bai samu ba</string>
+    <string name="result_heatmap_a11y">Taswirar zafin kulawa</string>
+
+    <string name="history_title">Tarihi</string>
+    <string name="history_empty">Babu binciken har yanzu.\nSakamako zai bayyana anan bayan kowane hoto.</string>
+    <string name="history_label_inconclusive">Bai tabbata ba</string>
+    <string name="history_confidence">Tabbas %1$d%%</string>
+    <string name="history_patient_id">ID na mai jinya: %1$s</string>
+    <string name="history_detail_title">Cikakken bayanin binciken</string>
+    <string name="history_action_delete">Share rikodi</string>
+    <string name="history_delete_confirm_title">Share wannan rikodin?</string>
+    <string name="history_delete_confirm_body">Wannan zai cire rikodin da kowane hoton da aka ajiye har abada.</string>
+    <string name="history_delete_confirm_yes">Share</string>
+    <string name="history_delete_confirm_cancel">Soke</string>
+    <string name="history_no_image">Babu hoton da aka ajiye don wannan rikodin.</string>
+    <string name="history_action_clear_all">Share duka</string>
+    <string name="history_clear_all_confirm_title">Share dukkan binciken?</string>
+    <string name="history_clear_all_confirm_body">Wannan zai cire har abada kowane rikodin bincike da kowane hoton da aka ajiye. Ba a iya soke shi.</string>
+    <string name="history_clear_all_confirm_yes">Share duka</string>
+
+    <string name="settings_title">Saituna</string>
+    <string name="settings_section_privacy">Sirri</string>
+    <string name="settings_section_threshold">Matakin tabbas</string>
+    <string name="settings_section_about">Game da</string>
+    <string name="settings_section_language">Harshe</string>
+    <string name="settings_language_system">Harshen tsarin</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_language_es">Español</string>
+    <string name="settings_language_pt">Português</string>
+    <string name="settings_language_fr">Français</string>
+    <string name="settings_language_sw">Kiswahili</string>
+    <string name="settings_language_ha">Hausa</string>
+    <string name="settings_language_yo">Yorùbá</string>
+    <string name="settings_language_ig">Igbo</string>
+    <string name="settings_language_lg">Luganda</string>
+    <string name="settings_language_qu">Runa Simi</string>
+    <string name="settings_save_images">Ajiye hotunan binciken a wannan wayar</string>
+    <string name="settings_save_images_body">Idan an kashe, kawai sakamakon zai ajiye, babu hoton mai jinya da zai kasance a wayar.</string>
+    <string name="settings_section_developer">Mai haɓakawa (gyara kawai)</string>
+    <string name="settings_validity_gate">Binciken ingancin mahaifa</string>
+    <string name="settings_validity_gate_body">Ƙi hotunan da basu yi kama da naman mahaifa ba (hannu, bango, da sauransu) kafin rabe-raben. Yana komawa zuwa KUNNE a duk lokacin da aka kunna app, sauya zaman kawai don gwada saliency a kan emulator. Ba za a iya kashe shi a cikin sigogin samarwa ba.</string>
+    <string name="settings_threshold_body">Ƙasa da wannan tabbas, Mira za ta sanya sakamakon a matsayin bai tabbata ba kuma ta nemi sake hoto.</string>
+    <string name="settings_threshold_value">%1$d%%</string>
+    <string name="settings_version">Sigar %1$s</string>
+    <string name="settings_disclaimer">Mira na taimakawa a binciken, ba ganewar asali ba. Hukunci na ƙarshe na likitanci alhakin mai aikin lafiya da aka horar da shi ne.</string>
+</resources>

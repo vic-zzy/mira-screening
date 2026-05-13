@@ -1,0 +1,44 @@
+# Gradle
+.gradle/
+build/
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Local config
+local.properties
+keystore.properties
+*.keystore
+*.jks
+
+# Build artifacts
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Trained ML model artifacts (committed selectively when ready, not by default)
+*.tflite
+*.onnx
+*.pt
+*.pth
+
+# Kotlin
+.kotlin/
+
+# macOS
+.DS_Store
+
+# Environment / secrets
+.env
+.env.local
+
+# Claude Code memory (not part of project)
+memory/
+
+# OpenCV SDK (manual install, do not commit)
+opencv-android-sdk/

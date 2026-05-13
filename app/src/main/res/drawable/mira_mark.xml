@@ -1,0 +1,84 @@
+<!-- Mira aperture mark. Six-blade iris with a warm terracotta center,
+     symbolizing both 'screening' (the iris/eye) and the camera aperture. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <!-- Outer ring -->
+    <path
+        android:strokeColor="#2A4A4D"
+        android:strokeWidth="1.75"
+        android:fillColor="#00000000"
+        android:pathData="M 2 24 A 22 22 0 1 1 46 24 A 22 22 0 1 1 2 24 Z" />
+
+    <!-- Six filled blades -->
+    <group android:pivotX="24" android:pivotY="24" android:rotation="0">
+        <path android:fillColor="#2A4A4D" android:fillAlpha="0.18"
+            android:pathData="M 24 4.5 L 38.7 21 L 24 21 Z" />
+    </group>
+    <group android:pivotX="24" android:pivotY="24" android:rotation="60">
+        <path android:fillColor="#2A4A4D" android:fillAlpha="0.24"
+            android:pathData="M 24 4.5 L 38.7 21 L 24 21 Z" />
+    </group>
+    <group android:pivotX="24" android:pivotY="24" android:rotation="120">
+        <path android:fillColor="#2A4A4D" android:fillAlpha="0.18"
+            android:pathData="M 24 4.5 L 38.7 21 L 24 21 Z" />
+    </group>
+    <group android:pivotX="24" android:pivotY="24" android:rotation="180">
+        <path android:fillColor="#2A4A4D" android:fillAlpha="0.24"
+            android:pathData="M 24 4.5 L 38.7 21 L 24 21 Z" />
+    </group>
+    <group android:pivotX="24" android:pivotY="24" android:rotation="240">
+        <path android:fillColor="#2A4A4D" android:fillAlpha="0.18"
+            android:pathData="M 24 4.5 L 38.7 21 L 24 21 Z" />
+    </group>
+    <group android:pivotX="24" android:pivotY="24" android:rotation="300">
+        <path android:fillColor="#2A4A4D" android:fillAlpha="0.24"
+            android:pathData="M 24 4.5 L 38.7 21 L 24 21 Z" />
+    </group>
+
+    <!-- Six stroked blade outlines -->
+    <group android:pivotX="24" android:pivotY="24" android:rotation="0">
+        <path android:strokeColor="#2A4A4D" android:strokeWidth="0.9"
+            android:strokeAlpha="0.85" android:strokeLineJoin="round"
+            android:fillColor="#00000000"
+            android:pathData="M 24 4.5 L 38.7 21 L 24 21 Z" />
+    </group>
+    <group android:pivotX="24" android:pivotY="24" android:rotation="60">
+        <path android:strokeColor="#2A4A4D" android:strokeWidth="0.9"
+            android:strokeAlpha="0.85" android:strokeLineJoin="round"
+            android:fillColor="#00000000"
+            android:pathData="M 24 4.5 L 38.7 21 L 24 21 Z" />
+    </group>
+    <group android:pivotX="24" android:pivotY="24" android:rotation="120">
+        <path android:strokeColor="#2A4A4D" android:strokeWidth="0.9"
+            android:strokeAlpha="0.85" android:strokeLineJoin="round"
+            android:fillColor="#00000000"
+            android:pathData="M 24 4.5 L 38.7 21 L 24 21 Z" />
+    </group>
+    <group android:pivotX="24" android:pivotY="24" android:rotation="180">
+        <path android:strokeColor="#2A4A4D" android:strokeWidth="0.9"
+            android:strokeAlpha="0.85" android:strokeLineJoin="round"
+            android:fillColor="#00000000"
+            android:pathData="M 24 4.5 L 38.7 21 L 24 21 Z" />
+    </group>
+    <group android:pivotX="24" android:pivotY="24" android:rotation="240">
+        <path android:strokeColor="#2A4A4D" android:strokeWidth="0.9"
+            android:strokeAlpha="0.85" android:strokeLineJoin="round"
+            android:fillColor="#00000000"
+            android:pathData="M 24 4.5 L 38.7 21 L 24 21 Z" />
+    </group>
+    <group android:pivotX="24" android:pivotY="24" android:rotation="300">
+        <path android:strokeColor="#2A4A4D" android:strokeWidth="0.9"
+            android:strokeAlpha="0.85" android:strokeLineJoin="round"
+            android:fillColor="#00000000"
+            android:pathData="M 24 4.5 L 38.7 21 L 24 21 Z" />
+    </group>
+
+    <!-- Center terracotta dot -->
+    <path
+        android:fillColor="#C97A4A"
+        android:pathData="M 18.5 24 A 5.5 5.5 0 1 1 29.5 24 A 5.5 5.5 0 1 1 18.5 24 Z" />
+</vector>

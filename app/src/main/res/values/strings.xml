@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">Mira</string>
+    <string name="app_tagline">Specialist sight, anywhere</string>
+
+    <!-- Common actions -->
+    <string name="action_back">Back</string>
+    <string name="action_done">Done</string>
+    <string name="action_next">Next</string>
+    <string name="action_skip">Skip</string>
+
+    <!-- Home -->
+    <string name="home_start">Start screening</string>
+    <string name="home_history">History</string>
+    <string name="home_settings">Settings</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_p1_title">Specialist-grade help in your pocket</string>
+    <string name="onboarding_p1_body">Mira is a screening tool that looks at the cervix image with you and suggests whether to refer the patient. Your clinical judgment is still in charge.</string>
+    <string name="onboarding_p2_title">Three simple steps</string>
+    <string name="onboarding_p2_body">Prepare the patient and tap once. Mira takes three quick photos in a row, picks the sharpest, and shows a suggestion with a confidence score. You decide what to do next.</string>
+    <string name="onboarding_p3_title">Your privacy comes first</string>
+    <string name="onboarding_p3_body">Patient images stay on this phone. Mira never sends them anywhere unless you choose to.</string>
+    <string name="onboarding_get_started">Get started</string>
+
+    <!-- PreCapture -->
+    <string name="precapture_title">Prepare for capture</string>
+    <string name="precapture_instruction">Tap each step as you complete it.</string>
+    <string name="precapture_step_speculum">Speculum inserted</string>
+    <string name="precapture_step_acetic">Acetic acid applied</string>
+    <string name="precapture_timer_idle">60-second wait starts after acetic acid</string>
+    <string name="precapture_timer_running">Waiting 60 s for acetowhite reaction…</string>
+    <string name="precapture_timer_done">Wait complete</string>
+    <string name="precapture_continue">Continue to capture</string>
+    <string name="precapture_continue_disabled">Complete all steps to continue</string>
+    <string name="precapture_seconds_left">%1$ds</string>
+    <string name="precapture_patient_id_label">Patient ID (optional)</string>
+    <string name="precapture_patient_id_hint">e.g. 2026-04-26-001</string>
+
+    <!-- Capture -->
+    <string name="capture_permission_title">Mira needs the camera</string>
+    <string name="capture_permission_body">Mira uses the camera to capture the cervical image. The image stays on this phone unless you choose to sync.</string>
+    <string name="capture_permission_allow">Allow camera</string>
+    <string name="capture_permission_blocked_title">Camera access blocked</string>
+    <string name="capture_permission_blocked_body">Mira needs camera access to capture images. Please enable it in your phone\'s Settings.</string>
+    <string name="capture_permission_open_settings">Open settings</string>
+    <string name="capture_torch">Light</string>
+    <string name="capture_button">Capture</string>
+    <string name="capture_capturing">Capturing…</string>
+    <string name="capture_captured">Captured</string>
+    <string name="capture_burst_progress">Burst %1$d of %2$d</string>
+    <string name="capture_burst_hold">Hold steady</string>
+    <string name="capture_burst_kept">Used %1$d of %2$d frames</string>
+
+    <!-- Quality (used by UI mapping; QualityGate returns enum keys) -->
+    <string name="quality_too_dark">Too dark, turn on the light</string>
+    <string name="quality_too_bright">Too bright, adjust position</string>
+    <string name="quality_too_glare">Too much glare, reposition</string>
+    <string name="quality_too_blurry">Hold still, image is blurry</string>
+    <string name="quality_somewhat_blurry">Hold steady, adjusting</string>
+    <string name="quality_good">Image quality looks good</string>
+
+    <!-- Processing -->
+    <string name="processing_step_color">Adjusting color…</string>
+    <string name="processing_step_reading">Reading image…</string>
+    <string name="processing_step_heatmap">Drawing heatmap…</string>
+    <string name="processing_subtitle">Mira is analyzing the image. This usually takes a few seconds.</string>
+
+    <!-- Result -->
+    <string name="result_title">Screening result</string>
+    <string name="result_positive">Screening positive</string>
+    <string name="result_negative">Screening negative</string>
+    <string name="result_inconclusive">Inconclusive</string>
+    <string name="result_action_refer">Refer for treatment</string>
+    <string name="result_action_followup">Follow up in 3–5 years</string>
+    <string name="result_action_reimage">Please re-capture, confidence too low</string>
+    <string name="result_show_heatmap">Show heatmap</string>
+    <string name="result_hide_heatmap">Hide heatmap</string>
+    <string name="result_play">Play result</string>
+    <string name="result_stop">Stop</string>
+    <string name="result_disagree">I disagree with this result</string>
+    <string name="result_override_dialog_title">Manual override</string>
+    <string name="result_override_dialog_body">What does the screening look like to you?</string>
+    <string name="result_override_positive">Mark as positive</string>
+    <string name="result_override_negative">Mark as negative</string>
+    <string name="result_override_inconclusive">Mark as inconclusive</string>
+    <string name="result_override_save">Save override</string>
+    <string name="result_override_cancel">Cancel</string>
+    <string name="result_override_banner">Manually overridden by you</string>
+    <string name="help_dialog_close">Got it</string>
+    <string name="help_heatmap_title">What is the heatmap?</string>
+    <string name="help_heatmap_body">The colored overlay shows where Mira looked when making its decision. Bright areas are regions Mira considered important. If the bright area lands on the cervix and matches what you see as acetowhite, the result is more trustworthy. If it lands on the speculum or somewhere else, treat the result with caution and consider re-imaging.</string>
+    <string name="help_confidence_title">What does confidence mean?</string>
+    <string name="help_confidence_body">Confidence is how sure Mira is about its answer, from 0 to 100%. Above 80% is strong. Below the threshold you set in Settings (default 65%), Mira will mark the result as inconclusive and ask you to re-image. Your clinical judgment matters more than the number.</string>
+    <string name="result_confidence">Confidence: %1$d%%</string>
+    <string name="result_unavailable">Result not available</string>
+    <string name="result_heatmap_a11y">Attention heatmap</string>
+
+    <!-- History -->
+    <string name="history_title">History</string>
+    <string name="history_empty">No screenings yet.\nResults will appear here after each capture.</string>
+    <string name="history_label_inconclusive">Inconclusive</string>
+    <string name="history_confidence">Confidence %1$d%%</string>
+    <string name="history_patient_id">Patient ID: %1$s</string>
+    <string name="history_detail_title">Screening detail</string>
+    <string name="history_action_delete">Delete record</string>
+    <string name="history_delete_confirm_title">Delete this record?</string>
+    <string name="history_delete_confirm_body">This permanently removes the record and any saved image.</string>
+    <string name="history_delete_confirm_yes">Delete</string>
+    <string name="history_delete_confirm_cancel">Cancel</string>
+    <string name="history_no_image">No image saved for this record.</string>
+    <string name="history_action_clear_all">Clear all</string>
+    <string name="history_clear_all_confirm_title">Delete all screenings?</string>
+    <string name="history_clear_all_confirm_body">This permanently removes every screening record and any saved images. This cannot be undone.</string>
+    <string name="history_clear_all_confirm_yes">Delete all</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_privacy">Privacy</string>
+    <string name="settings_section_threshold">Confidence threshold</string>
+    <string name="settings_section_about">About</string>
+    <string name="settings_section_language">Language</string>
+    <string name="settings_language_system">System default</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_language_es">Español</string>
+    <string name="settings_language_pt">Português</string>
+    <string name="settings_language_fr">Français</string>
+    <string name="settings_language_sw">Kiswahili</string>
+    <string name="settings_language_ha">Hausa</string>
+    <string name="settings_language_yo">Yorùbá</string>
+    <string name="settings_language_ig">Igbo</string>
+    <string name="settings_language_lg">Luganda</string>
+    <string name="settings_language_qu">Runa Simi</string>
+    <string name="settings_save_images">Save screening images on this phone</string>
+    <string name="settings_save_images_body">When off, only the result is saved, no patient image stays on the phone.</string>
+    <string name="settings_section_developer">Developer (debug only)</string>
+    <string name="settings_validity_gate">Cervix-validity check</string>
+    <string name="settings_validity_gate_body">Refuse images that don\'t look like cervical tissue (a hand, a wall, etc.) before classifying. Resets to ON at every app launch, session-only override for testing the saliency overlay on the emulator. Cannot be disabled in production builds.</string>
+    <string name="settings_threshold_body">Below this confidence, Mira will mark the result as inconclusive and ask you to re-image.</string>
+    <string name="settings_threshold_value">%1$d%%</string>
+    <string name="settings_version">Version %1$s</string>
+    <string name="settings_disclaimer">Mira is screening assistance, not a diagnosis. Final clinical decisions are the responsibility of the trained provider.</string>
+</resources>
