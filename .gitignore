@@ -27,6 +27,9 @@ keystore.properties
 *.pt
 *.pth
 
+# Cervical classifier IS committed (small, needed for app to run)
+!app/src/main/assets/via_model.tflite
+
 # Kotlin
 .kotlin/
 
@@ -37,8 +40,13 @@ keystore.properties
 .env
 .env.local
 
-# Claude Code memory (not part of project)
+# Local notes (not part of submission)
 memory/
 
 # OpenCV SDK (manual install, do not commit)
 opencv-android-sdk/
+
+# Gemma 4 LiteRT-LM model file (large; download separately, see README)
+app/src/main/assets/gemma4.litertlm
+app/src/main/assets/*.litertlm
+app/src/main/assets/*.task

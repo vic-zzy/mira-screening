@@ -65,10 +65,10 @@ Requirements:
 Steps:
 
 1. Clone the repo and open it in Android Studio.
-2. Download the Gemma 4 model `.task` file from the [Kaggle Gemma 4 model page](https://www.kaggle.com/models/google/gemma-4) and place it at `app/src/main/assets/gemma4.task`. (See `app/src/main/assets/README.md` for the exact variant and file size.)
+2. Download the Gemma 4 E2B-IT LiteRT-LM model file from [litert-community/gemma-4-E2B-it-litert-lm on Hugging Face](https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm). Pick the generic cross-platform variant: `gemma-4-E2B-it.litertlm` (~2.6 GB). Rename it to `gemma4.litertlm` and place it at `app/src/main/assets/gemma4.litertlm`.
 3. Hit Run. Android Studio handles the rest.
 
-The image classifier is bundled inside the APK at `app/src/main/assets/mira_classifier.tflite`, so no separate download is required.
+The cervical image classifier is bundled in the repo at `app/src/main/assets/via_model.tflite`, so no separate download is required for that.
 
 ## License
 
