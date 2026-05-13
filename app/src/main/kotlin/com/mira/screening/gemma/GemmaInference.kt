@@ -1,14 +1,16 @@
 package com.mira.screening.gemma
 
 import android.content.Context
+import com.google.ai.edge.litertlm.Contents
 import com.google.ai.edge.litertlm.ConversationConfig
 import com.google.ai.edge.litertlm.Engine
 import com.google.ai.edge.litertlm.EngineConfig
+import com.google.ai.edge.litertlm.Message
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -92,16 +94,13 @@ object GemmaInference {
         waitUntilReady()
         val activeEngine = engine
             ?: error("Gemma engine missing after waitUntilReady; this is a bug")
-        val convConfig = systemInstruction?.let {
-            ConversationConfig(systemInstruction = it)
-        }
-        val conversation = if (convConfig != null) {
-            activeEngine.createConversation(convConfig)
-        } else {
-            activeEngine.createConversation()
-        }
-        conversation.use { conv ->
-            conv.sendMessage(prompt)
+        val convConfig = ConversationConfig(
+            systemInstruction = systemInstruction?.let { Contents.of(it) }
+        )
+        activeEngine.createConversation(convConfig).use { conv ->
+            // sendMessage(text) returns a Message; Message.toString() yields
+            // the text content of the model's reply.
+            conv.sendMessage(prompt).toString()
         }
     }
 
@@ -119,21 +118,16 @@ object GemmaInference {
         waitUntilReady()
         val activeEngine = engine
             ?: error("Gemma engine missing after waitUntilReady; this is a bug")
-        val convConfig = systemInstruction?.let {
-            ConversationConfig(systemInstruction = it)
-        }
-        val conversation = if (convConfig != null) {
-            activeEngine.createConversation(convConfig)
-        } else {
-            activeEngine.createConversation()
-        }
-        return flow {
-            conversation.sendMessageAsync(prompt).collect { token ->
-                emit(token)
-            }
-        }.onCompletion {
-            conversation.close()
-        }
+        val convConfig = ConversationConfig(
+            systemInstruction = systemInstruction?.let { Contents.of(it) }
+        )
+        val conversation = activeEngine.createConversation(convConfig)
+        // The Flow overload of sendMessageAsync only takes a Message, not a
+        // raw String; wrap the prompt in a user-role Message. The emitted
+        // Message tokens are converted to text via toString() in map().
+        return conversation.sendMessageAsync(Message.user(prompt))
+            .map { it.toString() }
+            .onCompletion { conversation.close() }
     }
 
     /**
