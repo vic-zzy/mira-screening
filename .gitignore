@@ -21,14 +21,11 @@ keystore.properties
 *.ap_
 *.dex
 
-# Trained ML model artifacts (committed selectively when ready, not by default)
+# Trained ML model artifacts (distributed via Releases, not committed)
 *.tflite
 *.onnx
 *.pt
 *.pth
-
-# Cervical classifier IS committed (small, needed for app to run)
-!app/src/main/assets/via_model.tflite
 
 # Kotlin
 .kotlin/

@@ -66,9 +66,10 @@ Steps:
 
 1. Clone the repo and open it in Android Studio.
 2. Download the Gemma 4 E2B-IT LiteRT-LM model file from [litert-community/gemma-4-E2B-it-litert-lm on Hugging Face](https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm). Pick the generic cross-platform variant: `gemma-4-E2B-it.litertlm` (~2.6 GB). Rename it to `gemma4.litertlm` and place it at `app/src/main/assets/gemma4.litertlm`.
-3. Hit Run. Android Studio handles the rest.
+3. Download the cervical classifier `via_model.tflite` (~84 MB) from this repository's [Releases page](https://github.com/vic-zzy/mira-screening/releases). Place it at `app/src/main/assets/via_model.tflite`.
+4. Hit Run. Android Studio handles the rest.
 
-The cervical image classifier is bundled in the repo at `app/src/main/assets/via_model.tflite`, so no separate download is required for that.
+If you would rather skip the rebuild and just try Mira on your phone, the [Releases page](https://github.com/vic-zzy/mira-screening/releases) also ships a pre-built APK with both models already bundled inside.
 
 ## License
 
