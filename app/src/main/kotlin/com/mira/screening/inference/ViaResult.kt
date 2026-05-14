@@ -2,7 +2,7 @@ package com.mira.screening.inference
 
 enum class ViaClassification {
     POSITIVE,      // Acetowhite detected, refer for treatment
-    NEGATIVE,      // No acetowhite, follow up in 3–5 years
+    NEGATIVE,      // No acetowhite, follow up in 3 to 5 years
     INCONCLUSIVE   // Confidence below threshold, re-image
 }
 

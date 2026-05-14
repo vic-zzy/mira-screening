@@ -11,7 +11,7 @@ import android.graphics.Bitmap
 //   - HSV-based acetowhite enhancement
 //
 // Run on a background dispatcher; this is CPU-bound and not negligible
-// (~50–150 ms on a $100 Android, ~10 ms on a flagship).
+// (roughly 50 to 150 ms on a $100 Android, ~10 ms on a flagship).
 object Preprocessor {
     const val MODEL_INPUT_SIZE = 224
 

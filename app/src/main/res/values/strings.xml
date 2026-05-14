@@ -73,7 +73,7 @@
     <string name="result_negative">Screening negative</string>
     <string name="result_inconclusive">Inconclusive</string>
     <string name="result_action_refer">Refer for treatment</string>
-    <string name="result_action_followup">Follow up in 3–5 years</string>
+    <string name="result_action_followup">Follow up in 3 to 5 years</string>
     <string name="result_action_reimage">Please re-capture, confidence too low</string>
     <string name="result_show_heatmap">Show heatmap</string>
     <string name="result_hide_heatmap">Hide heatmap</string>
