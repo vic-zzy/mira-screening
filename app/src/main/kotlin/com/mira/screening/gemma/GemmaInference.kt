@@ -138,6 +138,15 @@ object GemmaInference {
                     _state.value = State.LoadingEngine
                     val config = EngineConfig(modelPath = modelFile.absolutePath)
                     engine = Engine(config).also { it.initialize() }
+                    // Pay the one-time JIT and graph-compilation cost on a
+                    // throwaway generation while the UI is still showing
+                    // "loading the on-device reasoning model". The user's
+                    // perceived loading time gets a few seconds longer, but
+                    // the first real generation they actually see (a tapped
+                    // chip in Ask Mira, or the result-screen narration
+                    // kicking off) is dramatically faster because the engine
+                    // is already warm. See preWarm() for what runs.
+                    preWarm()
                     _state.value = State.Ready
                 }
             } catch (t: Throwable) {
@@ -146,6 +155,33 @@ object GemmaInference {
                     t.message ?: "Mira could not load her AI model."
                 )
             }
+        }
+    }
+
+    /**
+     * Run a tiny throwaway generation so the LiteRT-LM engine pays its
+     * one-time setup costs (kernel selection, graph compilation, memory
+     * layout) here, while the user is still looking at the "loading the
+     * reasoning model" indicator, rather than on their first real prompt.
+     *
+     * Deliberately catches and logs any failure rather than propagating: a
+     * pre-warm failure is not a reason to refuse to expose the engine to
+     * the rest of the app. The first real generation will retry anyway and
+     * surface its own error if something is genuinely wrong.
+     */
+    private suspend fun preWarm() {
+        val activeEngine = engine ?: return
+        try {
+            activeEngine.createConversation(ConversationConfig()).use { conv ->
+                conv.sendMessage("Hi").toString()
+            }
+            android.util.Log.i(LOG_TAG, "Gemma 4 pre-warm complete")
+        } catch (t: Throwable) {
+            android.util.Log.w(
+                LOG_TAG,
+                "Gemma 4 pre-warm failed; proceeding to Ready anyway",
+                t
+            )
         }
     }
 
