@@ -447,15 +447,14 @@ private fun GemmaStatusBanner(state: GemmaInference.State) {
 
 /**
  * Pre-seeded starter questions surfaced as tappable chips below the welcome
- * message. Cover the four most common CHW knowledge gaps for VIA: anatomy,
- * referral decision, timing, and reference baseline. Phrased the way a CHW
- * would actually ask, not the way a textbook would title a section.
+ * message. Three of the most common CHW knowledge gaps for VIA: anatomy,
+ * referral decision, and timing. Phrased the way a CHW would actually ask,
+ * not the way a textbook would title a section.
  */
 private val SUGGESTED_QUESTIONS = listOf(
     "How do I find the transformation zone?",
     "When should I refer a patient?",
-    "How long do I wait after applying acetic acid?",
-    "What does a normal cervix look like?"
+    "How long do I wait after applying acetic acid?"
 )
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -470,11 +469,16 @@ private fun SuggestedQuestionChips(
             text = "Try one of these",
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
+            modifier = Modifier.padding(start = 4.dp, bottom = 4.dp)
         )
+        // FlowRow with zero explicit vertical spacing: SuggestionChip wraps
+        // itself in a 48dp minimum interactive size for accessibility, which
+        // already supplies all the visual breathing room between rows. Any
+        // extra Arrangement.spacedBy here would compound on top of that
+        // 48dp and make the chip stack look airy and disconnected from the
+        // welcome message above it.
         FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             questions.forEach { question ->
                 SuggestionChip(

@@ -7,6 +7,8 @@ import android.speech.tts.UtteranceProgressListener
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -131,9 +133,15 @@ fun ResultScreen(
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
             )
 
+            // The middle section (image, chips, result card, Mira explains,
+            // disagree button) needs to scroll because the Mira explains
+            // card grows with the generated narration, and on smaller
+            // viewports the combined height exceeds the screen. The
+            // header and Done button stay fixed; only the body scrolls.
             Column(
                 modifier = Modifier
                     .weight(1f)
+                    .verticalScroll(rememberScrollState())
                     .padding(horizontal = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
