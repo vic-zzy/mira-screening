@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.material3.CircularProgressIndicator
@@ -57,6 +58,8 @@ import com.mira.screening.gemma.GemmaInference
 import com.mira.screening.gemma.PromptTemplates
 import com.mira.screening.ui.components.MarkdownText
 import com.mira.screening.ui.components.TypingDotsIndicator
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -82,6 +85,11 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
     val messages = remember { mutableStateListOf<ChatMessage>() }
     var input by remember { mutableStateOf("") }
     var isGenerating by remember { mutableStateOf(false) }
+    // Track the live generation Job so the Stop button can cancel it.
+    // Cleared in the finally block of sendQuestion's launch so the
+    // "isGenerating ? show Stop : show Send" pivot in the input bar stays
+    // in lockstep with the actual coroutine state.
+    var currentJob by remember { mutableStateOf<Job?>(null) }
     val listState = rememberLazyListState()
     val gemmaState by GemmaInference.state.collectAsState()
     val isReady = gemmaState is GemmaInference.State.Ready
@@ -134,7 +142,7 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
             messages.add(assistantMessage)
             val placeholderIndex = messages.lastIndex
             isGenerating = true
-            scope.launch {
+            currentJob = scope.launch {
                 val builder = StringBuilder()
                 try {
                     GemmaInference.generateStream(
@@ -160,6 +168,20 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
                     messages[placeholderIndex] = assistantMessage.copy(
                         text = builder.toString().ifEmpty { assistantMessage.text }
                     )
+                } catch (ce: CancellationException) {
+                    // User pressed Stop. Preserve whatever was generated so
+                    // far rather than replacing it with an error string; if
+                    // literally nothing came through before the cancel, leave
+                    // a short acknowledgment so the empty bubble does not
+                    // hang as a permanent typing indicator. Re-thrown per
+                    // the structured-concurrency convention so the coroutine
+                    // machinery completes properly.
+                    if (builder.isEmpty()) {
+                        messages[placeholderIndex] = assistantMessage.copy(
+                            text = "_Stopped._"
+                        )
+                    }
+                    throw ce
                 } catch (t: Throwable) {
                     // Defensive catch: any error that escapes the Flow's own
                     // .catch (e.g. an upstream synchronous throw before the
@@ -171,9 +193,17 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
                     )
                 } finally {
                     isGenerating = false
+                    currentJob = null
                 }
             }
         }
+    }
+
+    // Cancel the live generation Job. The launch's finally block clears
+    // isGenerating and currentJob, so we deliberately do not touch either
+    // here, otherwise the two state owners can drift apart for one frame.
+    val stopGeneration: () -> Unit = {
+        currentJob?.cancel()
     }
 
     Scaffold(
@@ -234,8 +264,10 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
             InputBar(
                 value = input,
                 onValueChange = { input = it },
-                enabled = !isGenerating && isReady,
-                onSend = { sendQuestion(input) }
+                inputEnabled = !isGenerating && isReady,
+                isGenerating = isGenerating,
+                onSend = { sendQuestion(input) },
+                onStop = stopGeneration
             )
         }
     }
@@ -307,13 +339,27 @@ private fun MessageBubble(message: ChatMessage) {
     }
 }
 
+/**
+ * Bottom input bar with a single action button that pivots between Send and
+ * Stop depending on whether Gemma is currently generating. When idle the
+ * button submits the typed question (or stays dimmed if the field is empty
+ * or Gemma is not yet Ready). When generating it cancels the live coroutine
+ * so the user can cut off a long answer once they've seen enough.
+ */
 @Composable
 private fun InputBar(
     value: String,
     onValueChange: (String) -> Unit,
-    enabled: Boolean,
-    onSend: () -> Unit
+    inputEnabled: Boolean,
+    isGenerating: Boolean,
+    onSend: () -> Unit,
+    onStop: () -> Unit
 ) {
+    val canSend = inputEnabled && value.isNotBlank()
+    // The action button stays interactive in two situations: when Gemma is
+    // already generating (so the user can press Stop), and when the user
+    // has typed something and the engine is Ready (so they can press Send).
+    val buttonActive = isGenerating || canSend
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -325,7 +371,7 @@ private fun InputBar(
             onValueChange = onValueChange,
             modifier = Modifier.weight(1f),
             placeholder = { Text("Ask a question about VIA.") },
-            enabled = enabled,
+            enabled = inputEnabled,
             shape = RoundedCornerShape(20.dp),
             maxLines = 4,
             keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
@@ -337,13 +383,13 @@ private fun InputBar(
         )
         Spacer(Modifier.size(8.dp))
         IconButton(
-            onClick = onSend,
-            enabled = enabled && value.isNotBlank(),
+            onClick = { if (isGenerating) onStop() else onSend() },
+            enabled = buttonActive,
             modifier = Modifier
                 .size(48.dp)
                 .clip(RoundedCornerShape(24.dp))
                 .background(
-                    if (enabled && value.isNotBlank()) {
+                    if (buttonActive) {
                         MaterialTheme.colorScheme.primary
                     } else {
                         MaterialTheme.colorScheme.surfaceVariant
@@ -351,9 +397,13 @@ private fun InputBar(
                 )
         ) {
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.Send,
-                contentDescription = "Send",
-                tint = if (enabled && value.isNotBlank()) {
+                imageVector = if (isGenerating) {
+                    Icons.Filled.Stop
+                } else {
+                    Icons.AutoMirrored.Filled.Send
+                },
+                contentDescription = if (isGenerating) "Stop" else "Send",
+                tint = if (buttonActive) {
                     MaterialTheme.colorScheme.onPrimary
                 } else {
                     MaterialTheme.colorScheme.onSurfaceVariant
