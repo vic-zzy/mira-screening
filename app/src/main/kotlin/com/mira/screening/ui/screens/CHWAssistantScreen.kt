@@ -163,14 +163,19 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
                     val placeholderIndex = messages.lastIndex
                     isGenerating = true
                     scope.launch {
+                        val builder = StringBuilder()
                         try {
-                            val builder = StringBuilder()
                             GemmaInference.generateStream(
                                 prompt = PromptTemplates.TrainingQA.userPrompt(question),
                                 systemInstruction = PromptTemplates.TrainingQA.systemInstruction
                             ).catch { t ->
+                                // Catches Flow-side errors emitted during
+                                // collection. Surfaced as the assistant
+                                // message so the user sees it.
+                                builder.clear()
                                 builder.append(
-                                    "Sorry, I could not generate an answer right now. (${t.message.orEmpty()})"
+                                    "Sorry, I could not generate an answer right now. " +
+                                        "(${t.message.orEmpty()})"
                                 )
                             }.collect { token ->
                                 builder.append(token)
@@ -178,6 +183,21 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
                                     text = builder.toString()
                                 )
                             }
+                            // Final flush in case the catch block updated the
+                            // builder without emit triggering a recomposition.
+                            messages[placeholderIndex] = assistantMessage.copy(
+                                text = builder.toString().ifEmpty { assistantMessage.text }
+                            )
+                        } catch (t: Throwable) {
+                            // Defensive catch: any error that escapes the
+                            // Flow's own .catch (e.g. an upstream synchronous
+                            // throw before the Flow exists) lands here and
+                            // becomes a visible assistant message instead of
+                            // crashing the activity.
+                            messages[placeholderIndex] = assistantMessage.copy(
+                                text = "Sorry, I could not generate an answer right now. " +
+                                    "(${t.message.orEmpty()})"
+                            )
                         } finally {
                             isGenerating = false
                         }

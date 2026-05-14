@@ -107,7 +107,9 @@ object GemmaInference {
     ): String = withContext(Dispatchers.Default) {
         waitUntilReady()
         val activeEngine = engine
-            ?: error("Gemma engine missing after waitUntilReady; this is a bug")
+            ?: throw IllegalStateException(
+                "Gemma is not available. The model failed to initialize."
+            )
         val convConfig = ConversationConfig(
             systemInstruction = systemInstruction?.let { Contents.of(it) }
         )
@@ -131,7 +133,18 @@ object GemmaInference {
     ): Flow<String> {
         waitUntilReady()
         val activeEngine = engine
-            ?: error("Gemma engine missing after waitUntilReady; this is a bug")
+        // Surface engine-missing as a flow-side error rather than a
+        // synchronous throw, so the consumer's .catch operator picks it up
+        // instead of crashing the launching coroutine. This guards against
+        // the case where startInitialization failed (missing model file,
+        // OOM, native init error) and engine remained null.
+        if (activeEngine == null) {
+            return flow {
+                throw IllegalStateException(
+                    "Gemma is not available. The model failed to initialize."
+                )
+            }
+        }
         val convConfig = ConversationConfig(
             systemInstruction = systemInstruction?.let { Contents.of(it) }
         )
