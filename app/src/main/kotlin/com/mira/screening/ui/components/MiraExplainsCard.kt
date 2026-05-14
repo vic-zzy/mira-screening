@@ -11,9 +11,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.CloudDownload
-import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -57,6 +58,7 @@ fun MiraExplainsCard(
     confidencePercent: Int,
     heatmapFocus: String,
     languageName: String,
+    isSpeaking: Boolean = false,
     onPlayPressed: (text: String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -103,7 +105,7 @@ fun MiraExplainsCard(
             BodyContent(
                 gemmaState = gemmaState,
                 narration = narration,
-                languageName = languageName,
+                isSpeaking = isSpeaking,
                 onPlayPressed = onPlayPressed
             )
         }
@@ -138,7 +140,7 @@ private fun HeaderRow(languageName: String) {
 private fun BodyContent(
     gemmaState: GemmaInference.State,
     narration: NarrationState,
-    languageName: String,
+    isSpeaking: Boolean,
     onPlayPressed: (text: String) -> Unit
 ) {
     when (gemmaState) {
@@ -148,7 +150,7 @@ private fun BodyContent(
         GemmaInference.State.Idle -> LoadingEngineBody()
         GemmaInference.State.Ready -> NarrationBody(
             narration = narration,
-            languageName = languageName,
+            isSpeaking = isSpeaking,
             onPlayPressed = onPlayPressed
         )
     }
@@ -228,7 +230,7 @@ private fun EngineErrorBody(message: String) {
 @Composable
 private fun NarrationBody(
     narration: NarrationState,
-    languageName: String,
+    isSpeaking: Boolean,
     onPlayPressed: (text: String) -> Unit
 ) {
     when (narration) {
@@ -242,7 +244,9 @@ private fun NarrationBody(
             )
             Spacer(Modifier.width(12.dp))
             Text(
-                text = "Preparing an explanation in $languageName.",
+                // The current language is already displayed as a label in
+                // the card header, so we deliberately do not repeat it here.
+                text = "Preparing an explanation.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -258,14 +262,24 @@ private fun NarrationBody(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
+                // Single button that pivots between Play and Stop based on
+                // whether THIS narration is currently being spoken. The
+                // parent (ResultScreen) tracks the active utterance and
+                // tells us via isSpeaking. Matching the play-chip pattern
+                // for the upper "Play result" control so both buttons feel
+                // like the same gesture.
                 TextButton(onClick = { onPlayPressed(narration.text) }) {
                     Icon(
-                        imageVector = Icons.Outlined.PlayArrow,
+                        imageVector = if (isSpeaking) {
+                            Icons.Filled.Stop
+                        } else {
+                            Icons.Filled.PlayArrow
+                        },
                         contentDescription = null,
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(Modifier.width(6.dp))
-                    Text("Play in $languageName")
+                    Text(if (isSpeaking) "Stop" else "Play")
                 }
             }
         }

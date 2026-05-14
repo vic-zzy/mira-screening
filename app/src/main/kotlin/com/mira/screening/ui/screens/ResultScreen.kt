@@ -1,5 +1,6 @@
 package com.mira.screening.ui.screens
 
+import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
@@ -44,6 +45,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -96,21 +98,73 @@ fun ResultScreen(
     val context = LocalContext.current
     val repo = remember { ScreeningRepository(context) }
     var ttsReady by remember { mutableStateOf(false) }
-    var speaking by remember { mutableStateOf(false) }
+    // The id of the utterance currently being spoken, or null when idle.
+    // Two play buttons share the same TextToSpeech instance (the top
+    // "Play result" chip and the Mira card's Play/Stop button), so each
+    // call passes a distinct id ("mira-result" vs "mira-explain") and the
+    // buttons toggle their own glyph independently based on which id is
+    // active. Cleared in onDone/onError so cancelling or finishing flips
+    // both buttons back to Play.
+    var speakingUtteranceId by remember { mutableStateOf<String?>(null) }
+
+    // Prefer Google's TTS engine ("com.google.android.tts") when it is
+    // installed: it ships higher-quality neural voices for many locales,
+    // while the AOSP fallback (Pico) is the robotic one. If Google's
+    // engine is not installed (rare on modern devices and emulators with
+    // Google APIs), pass null so TextToSpeech uses the system default.
+    val preferredTtsEngine = remember {
+        try {
+            context.packageManager.getPackageInfo("com.google.android.tts", 0)
+            "com.google.android.tts"
+        } catch (_: PackageManager.NameNotFoundException) {
+            null
+        }
+    }
     val tts = remember {
-        TextToSpeech(context) { status -> ttsReady = status == TextToSpeech.SUCCESS }
+        TextToSpeech(
+            context,
+            { status -> ttsReady = status == TextToSpeech.SUCCESS },
+            preferredTtsEngine
+        )
     }
     DisposableEffect(tts) {
         tts.language = Locale.getDefault()
         tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-            override fun onStart(utteranceId: String?) { speaking = true }
-            override fun onDone(utteranceId: String?) { speaking = false }
+            override fun onStart(utteranceId: String?) {
+                speakingUtteranceId = utteranceId
+            }
+            override fun onDone(utteranceId: String?) {
+                speakingUtteranceId = null
+            }
             @Deprecated("Deprecated in API 21")
-            override fun onError(utteranceId: String?) { speaking = false }
+            override fun onError(utteranceId: String?) {
+                speakingUtteranceId = null
+            }
         })
         onDispose {
             tts.stop()
             tts.shutdown()
+        }
+    }
+
+    // Once the engine reports Ready, pick the highest-quality voice that
+    // (a) matches the current locale's language and (b) does not require
+    // a network connection. Voice.quality is a coarse-grained enum but
+    // it is the best signal the platform exposes for "neural vs robotic"
+    // and picking the highest available is consistently a quality win
+    // over relying on whatever the engine defaults to.
+    LaunchedEffect(ttsReady) {
+        if (!ttsReady) return@LaunchedEffect
+        val locale = Locale.getDefault()
+        tts.language = locale
+        val voices = tts.voices ?: return@LaunchedEffect
+        val best = voices
+            .filter { v ->
+                v.locale.language == locale.language && !v.isNetworkConnectionRequired
+            }
+            .maxByOrNull { it.quality }
+        if (best != null) {
+            tts.voice = best
         }
     }
 
@@ -208,11 +262,12 @@ fun ResultScreen(
                             )
                         }
                     }
+                    val isResultSpeaking = speakingUtteranceId == "mira-result"
                     AssistChip(
                         onClick = {
-                            if (speaking) {
+                            if (isResultSpeaking) {
                                 tts.stop()
-                                speaking = false
+                                speakingUtteranceId = null
                             } else {
                                 // Play loud and clear: max volume on the
                                 // music stream, neutral pan. STREAM_MUSIC
@@ -235,13 +290,13 @@ fun ResultScreen(
                         colors = AssistChipDefaults.assistChipColors(),
                         label = {
                             Text(
-                                if (speaking) stringResource(R.string.result_stop)
+                                if (isResultSpeaking) stringResource(R.string.result_stop)
                                 else stringResource(R.string.result_play)
                             )
                         },
                         leadingIcon = {
                             Icon(
-                                imageVector = if (speaking) Icons.Filled.Stop else Icons.Filled.PlayArrow,
+                                imageVector = if (isResultSpeaking) Icons.Filled.Stop else Icons.Filled.PlayArrow,
                                 contentDescription = null,
                                 modifier = Modifier.height(18.dp)
                             )
@@ -274,10 +329,11 @@ fun ResultScreen(
                     languageName = remember {
                         localeToLanguageName(Locale.getDefault().language)
                     },
+                    isSpeaking = speakingUtteranceId == "mira-explain",
                     onPlayPressed = { textToSpeak ->
-                        if (speaking) {
+                        if (speakingUtteranceId == "mira-explain") {
                             tts.stop()
-                            speaking = false
+                            speakingUtteranceId = null
                         } else if (ttsReady) {
                             val params = Bundle().apply {
                                 putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "mira-explain")
