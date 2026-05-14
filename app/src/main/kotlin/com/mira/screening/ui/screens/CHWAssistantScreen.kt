@@ -41,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -94,6 +95,35 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
     val gemmaState by GemmaInference.state.collectAsState()
     val isReady = gemmaState is GemmaInference.State.Ready
 
+    // A persistent chat session that lives for the lifetime of this screen,
+    // so every turn the user takes is visible to Gemma as conversation
+    // context. Without this, "Good answer" / "thanks" / "and for older
+    // patients?" land as standalone non-sequiturs and Gemma redirects
+    // because the prior question is invisible to it. Created lazily once
+    // the engine is Ready (the suspend startChat call waits internally,
+    // but we gate on isReady too so we do not race the warmup).
+    var chatSession by remember { mutableStateOf<GemmaInference.ChatSession?>(null) }
+    LaunchedEffect(isReady) {
+        if (isReady && chatSession == null) {
+            try {
+                chatSession = GemmaInference.startChat(
+                    systemInstruction = PromptTemplates.TrainingQA.systemInstruction
+                )
+            } catch (t: Throwable) {
+                android.util.Log.e(
+                    "CHWAssistantScreen",
+                    "Failed to start chat session; falling back to stateless calls",
+                    t
+                )
+            }
+        }
+    }
+    DisposableEffect(Unit) {
+        onDispose {
+            chatSession?.close()
+        }
+    }
+
     // On first composition, seed the conversation with an introductory
     // assistant message so the empty-chat state isn't bare. This is local
     // copy, not a Gemma call.
@@ -145,10 +175,23 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
             currentJob = scope.launch {
                 val builder = StringBuilder()
                 try {
-                    GemmaInference.generateStream(
-                        prompt = PromptTemplates.TrainingQA.userPrompt(question),
-                        systemInstruction = PromptTemplates.TrainingQA.systemInstruction
-                    ).catch { t ->
+                    // Prefer the persistent chat session so Gemma sees the
+                    // whole conversation. Fall back to a one-shot stateless
+                    // generateStream if the session has not been created
+                    // yet (e.g. the user fires a chip the very first frame
+                    // after Ready flips, before the LaunchedEffect runs).
+                    val session = chatSession
+                    val stream = if (session != null) {
+                        session.sendStream(
+                            PromptTemplates.TrainingQA.userPrompt(question)
+                        )
+                    } else {
+                        GemmaInference.generateStream(
+                            prompt = PromptTemplates.TrainingQA.userPrompt(question),
+                            systemInstruction = PromptTemplates.TrainingQA.systemInstruction
+                        )
+                    }
+                    stream.catch { t ->
                         // Catches Flow-side errors emitted during collection.
                         // Surfaced as the assistant message so the user sees
                         // it instead of a silent failure.

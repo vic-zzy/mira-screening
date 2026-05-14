@@ -36,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.mira.screening.gemma.GemmaInference
 import com.mira.screening.gemma.PromptTemplates
+import kotlinx.coroutines.flow.catch
 
 /**
  * A drop-in result-screen card that asks Gemma 4 for a patient-friendly,
@@ -67,6 +68,13 @@ fun MiraExplainsCard(
 
     // Kick off generation only once Gemma is ready and we haven't already
     // run for this (resultLabel, confidencePercent, language) triple.
+    // Streaming, not blocking. Switching from a single generate() call to
+    // generateStream gives us the same total wall time but a dramatically
+    // better perceived latency: instead of staring at "Preparing an
+    // explanation" for 20+ seconds while Gemma cranks on emulator CPU, the
+    // user watches the narration write itself one token at a time. The
+    // play button is gated on the Streaming -> Loaded transition so users
+    // cannot accidentally TTS-read a half-generated explanation.
     LaunchedEffect(
         gemmaState is GemmaInference.State.Ready,
         resultLabel,
@@ -76,8 +84,10 @@ fun MiraExplainsCard(
     ) {
         if (gemmaState !is GemmaInference.State.Ready) return@LaunchedEffect
         narration = NarrationState.Loading
-        narration = try {
-            val generated = GemmaInference.generate(
+        val builder = StringBuilder()
+        var streamErrored = false
+        try {
+            GemmaInference.generateStream(
                 prompt = PromptTemplates.ResultNarration.userPrompt(
                     resultLabel = resultLabel,
                     confidencePercent = confidencePercent,
@@ -85,10 +95,21 @@ fun MiraExplainsCard(
                     languageName = languageName
                 ),
                 systemInstruction = PromptTemplates.ResultNarration.systemInstruction
-            )
-            NarrationState.Loaded(text = generated.trim())
+            ).catch { t ->
+                streamErrored = true
+                narration = NarrationState.Error(message = t.message.orEmpty())
+            }.collect { token ->
+                builder.append(token)
+                narration = NarrationState.Streaming(partial = builder.toString().trim())
+            }
+            if (!streamErrored && builder.isNotEmpty()) {
+                narration = NarrationState.Loaded(text = builder.toString().trim())
+            }
         } catch (t: Throwable) {
-            NarrationState.Error(message = t.message.orEmpty())
+            // Upstream throw before the Flow even starts (e.g. engine
+            // disappeared between Ready and our send). Land as a friendly
+            // error rather than crashing the card.
+            narration = NarrationState.Error(message = t.message.orEmpty())
         }
     }
 
@@ -251,6 +272,15 @@ private fun NarrationBody(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+        is NarrationState.Streaming -> MarkdownText(
+            // Show the partial text as it streams in. No play button yet:
+            // the user should not be able to TTS-read a half-finished
+            // explanation. The button reappears in the Loaded branch
+            // below as soon as generation completes.
+            text = narration.partial,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface
+        )
         is NarrationState.Loaded -> Column {
             MarkdownText(
                 text = narration.text,
@@ -302,6 +332,9 @@ private fun formatBytes(bytes: Long): String {
 private sealed interface NarrationState {
     data object Idle : NarrationState
     data object Loading : NarrationState
+    /** Generation is in progress; [partial] holds whatever text has streamed so far. */
+    data class Streaming(val partial: String) : NarrationState
+    /** Generation finished cleanly. Play button is enabled here. */
     data class Loaded(val text: String) : NarrationState
     data class Error(val message: String) : NarrationState
 }

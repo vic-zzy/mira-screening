@@ -74,6 +74,18 @@ The `INTERNET` permission in the manifest exists exclusively for this one-time f
 
 If you would rather skip the build and try Mira on your phone, the [Releases page](https://github.com/vic-zzy/mira-screening/releases) ships a pre-built APK. The classifier is bundled inside; Gemma 4 downloads itself on first run the same way.
 
+## What's still improving
+
+Mira is built in hackathon timescale, so several surfaces are honest works-in-progress. We are flagging them up front because shipping with awareness of where the seams are is more useful than hiding them.
+
+**Voice quality.** Spoken playback uses Android's built-in text-to-speech. On English, Spanish, Portuguese, and French it sounds neural and clean (Mira prefers Google's TTS engine and picks the highest-quality voice available on the device for the current locale). On Swahili and Hausa it sounds more synthetic, and on Yoruba, Igbo, Luganda, and Quechua TTS support is patchy to absent — Gemma's narration text is still produced correctly, but the audio rendering is degraded or falls back to an English reader. The next step is embedding a lightweight neural TTS like Piper for clean offline voices across every supported locale; that adds ~50–100 MB per voice but levels the experience across languages.
+
+**Inference latency on slower hardware.** Gemma 4 E2B has ~2.3B active parameters. On real Android phones with `libOpenCL.so` and GPU acceleration, generation runs 3–5× faster than CPU, narrations come back in a few seconds, and the device stays cool. On emulators (CPU-only) and older devices without GPU support, the same generation takes 10–30 seconds and the host machine's fan winds up. Pre-warming on app launch already hides the first-call JIT cost; per-token streaming on every Gemma surface means the user sees text appearing instead of waiting on a spinner. We are continuing to tune both the prompts (shorter outputs where they fit) and the runtime configuration.
+
+**Conversation memory in Ask Mira.** Mira's chat now maintains a single LiteRT-LM Conversation across the session so follow-ups like "and for older patients?" or short acknowledgments like "thanks" no longer derail her. This works inside one screen visit; persisting chat history across app restarts is a logical next step.
+
+The throughline: this is a real working app today, with several rough edges we know about and are pushing on. Every limitation here has a concrete next step rather than a "this is broken."
+
 ## License
 
 Creative Commons Attribution 4.0 International (CC BY 4.0). See `LICENSE`.

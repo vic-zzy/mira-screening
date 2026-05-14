@@ -2,6 +2,7 @@ package com.mira.screening.gemma
 
 import android.content.Context
 import com.google.ai.edge.litertlm.Contents
+import com.google.ai.edge.litertlm.Conversation
 import com.google.ai.edge.litertlm.ConversationConfig
 import com.google.ai.edge.litertlm.Engine
 import com.google.ai.edge.litertlm.EngineConfig
@@ -242,6 +243,62 @@ object GemmaInference {
         return conversation.sendMessageAsync(Message.user(prompt))
             .map { it.toString() }
             .onCompletion { conversation.close() }
+    }
+
+    /**
+     * Start a long-lived chat session that keeps a single LiteRT-LM
+     * Conversation alive across multiple turns, so Gemma can see prior
+     * messages in this session as context. Use this for any chat-style
+     * surface where follow-up questions reference earlier turns (Ask
+     * Mira); use the one-shot [generate]/[generateStream] for surfaces
+     * that ask Gemma a single self-contained question (result narration,
+     * decision support).
+     *
+     * Caller owns the returned [ChatSession] and must call [ChatSession.close]
+     * when the chat surface goes away (e.g. via DisposableEffect in Compose).
+     */
+    suspend fun startChat(systemInstruction: String? = null): ChatSession {
+        waitUntilReady()
+        val activeEngine = engine
+            ?: throw IllegalStateException(
+                "Gemma is not available. The model failed to initialize."
+            )
+        val convConfig = ConversationConfig(
+            systemInstruction = systemInstruction?.let { Contents.of(it) }
+        )
+        return ChatSession(activeEngine.createConversation(convConfig))
+    }
+
+    /**
+     * A multi-turn conversation with Gemma. Holds a single underlying
+     * LiteRT-LM Conversation across sendStream calls so the model sees the
+     * full back-and-forth as context: "Good answer" no longer reads as a
+     * non-sequitur, and "and what about for older patients?" resolves
+     * against the actual prior question.
+     *
+     * Thread-safe to call sendStream from one coroutine at a time; the
+     * underlying Conversation is not designed for concurrent sends.
+     */
+    class ChatSession internal constructor(
+        private val conversation: Conversation
+    ) : AutoCloseable {
+        /**
+         * Stream tokens from Gemma for [prompt], with every prior turn in
+         * this session visible to the model as context. The returned Flow
+         * completes when generation finishes.
+         */
+        fun sendStream(prompt: String): Flow<String> {
+            return conversation.sendMessageAsync(Message.user(prompt))
+                .map { it.toString() }
+        }
+
+        override fun close() {
+            try {
+                conversation.close()
+            } catch (t: Throwable) {
+                android.util.Log.w(LOG_TAG, "ChatSession close threw", t)
+            }
+        }
     }
 
     /**
