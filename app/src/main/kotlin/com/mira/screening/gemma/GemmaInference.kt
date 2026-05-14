@@ -21,23 +21,30 @@ import java.io.File
 /**
  * On-device Gemma 4 inference, wrapped around the Google AI Edge LiteRT-LM SDK.
  *
- * Loads the bundled `gemma4.litertlm` asset once at app launch, extracts it to
- * the app's internal storage (LiteRT-LM expects a real filesystem path), then
- * exposes synchronous and streaming generation APIs to the rest of the app.
+ * Loads the `gemma4.litertlm` model from the app's internal files directory
+ * and exposes synchronous and streaming generation APIs to the rest of the
+ * app. The model file is NOT bundled inside the APK because its size
+ * (~2.6 GB) exceeds the 2 GB Java array limit that the Android asset
+ * packaging pipeline hits during compressDebugAssets. Instead, the model is
+ * distributed separately (see README) and must be placed at the path
+ * `context.filesDir/gemma4.litertlm` before Gemma can initialize. In a
+ * production build the app would download it on first launch.
  *
- * Initialization is ~10 seconds on a mid-range Android phone, so it runs in a
- * background coroutine kicked off from MiraApp.onCreate. UI surfaces that need
- * Gemma either wait via `waitUntilReady()` or check `isReady` and show a
- * loading state.
+ * Initialization is ~10 seconds on a mid-range Android phone, so it runs in
+ * a background coroutine kicked off from MiraApp.onCreate. UI surfaces that
+ * need Gemma either wait via `waitUntilReady()` or check `isReady` and show
+ * a loading state. If the model file is missing or initialization fails, the
+ * exception is swallowed at the engine level (logged but not propagated) and
+ * consumer code sees `isReady == false`; the consumer surfaces a friendly
+ * error to the user instead of crashing the app.
  *
  * Thread-safe: a single Mutex serializes initialization, and the underlying
  * Engine handles its own concurrency for createConversation calls.
  */
 object GemmaInference {
 
-    private const val ASSET_NAME = "gemma4.litertlm"
     private const val INTERNAL_FILENAME = "gemma4.litertlm"
-    private const val COPY_BUFFER_BYTES = 4 * 1024 * 1024
+    private const val LOG_TAG = "GemmaInference"
 
     @Volatile
     private var engine: Engine? = null
@@ -59,11 +66,18 @@ object GemmaInference {
     fun startInitialization(context: Context, scope: CoroutineScope) {
         if (initJob != null) return
         initJob = scope.launch(Dispatchers.IO) {
-            initMutex.withLock {
-                if (engine != null) return@withLock
-                val modelFile = ensureModelOnDisk(context.applicationContext)
-                val config = EngineConfig(modelPath = modelFile.absolutePath)
-                engine = Engine(config).also { it.initialize() }
+            try {
+                initMutex.withLock {
+                    if (engine != null) return@withLock
+                    val modelFile = locateModelFile(context.applicationContext)
+                    val config = EngineConfig(modelPath = modelFile.absolutePath)
+                    engine = Engine(config).also { it.initialize() }
+                }
+            } catch (t: Throwable) {
+                // Swallow at the engine level so the app does not crash on
+                // missing model file or LiteRT-LM init failure. Consumer UI
+                // surfaces will show a friendly error instead.
+                android.util.Log.e(LOG_TAG, "Gemma 4 initialization failed", t)
             }
         }
     }
@@ -141,29 +155,20 @@ object GemmaInference {
     }
 
     /**
-     * Extract the .litertlm model from the APK assets to the app's internal
-     * filesDir, if not already present. Returns the on-disk path for use as
-     * EngineConfig.modelPath.
-     *
-     * Runs on Dispatchers.IO. The first-launch copy of a ~2.4 GB file can
-     * take 30 to 60 seconds on a slow device, which is why startup is
-     * background-async.
+     * Resolve the model file's location on disk. The model lives in the app's
+     * internal files directory at `<filesDir>/gemma4.litertlm`. If absent,
+     * throws with a clear message naming the expected path so testers can
+     * place the file via Android Studio Device File Explorer, adb push, or
+     * the future first-launch download flow.
      */
-    private suspend fun ensureModelOnDisk(context: Context): File =
+    private suspend fun locateModelFile(context: Context): File =
         withContext(Dispatchers.IO) {
             val target = File(context.filesDir, INTERNAL_FILENAME)
-            if (target.exists() && target.length() > 0) {
-                return@withContext target
-            }
-            context.assets.open(ASSET_NAME).use { input ->
-                target.outputStream().use { output ->
-                    val buffer = ByteArray(COPY_BUFFER_BYTES)
-                    var read = input.read(buffer)
-                    while (read != -1) {
-                        output.write(buffer, 0, read)
-                        read = input.read(buffer)
-                    }
-                }
+            check(target.exists() && target.length() > 0) {
+                "Gemma 4 model not found at ${target.absolutePath}. The " +
+                    "model file (gemma4.litertlm, ~2.6 GB) is distributed " +
+                    "separately. Place it at this path via Device File " +
+                    "Explorer or adb push before launching."
             }
             target
         }
