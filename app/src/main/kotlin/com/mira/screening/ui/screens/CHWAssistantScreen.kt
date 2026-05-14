@@ -5,6 +5,8 @@ import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,6 +34,8 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -52,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import com.mira.screening.gemma.GemmaInference
 import com.mira.screening.gemma.PromptTemplates
 import com.mira.screening.ui.components.MarkdownText
+import com.mira.screening.ui.components.TypingDotsIndicator
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -117,6 +122,60 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
         }
     }
 
+    // Single send path so the input bar and the suggested-question chips
+    // both share identical behaviour: same validation, same placeholder
+    // bubble, same stream collection, same error fallback.
+    val sendQuestion: (String) -> Unit = { rawQuestion ->
+        val question = rawQuestion.trim()
+        if (question.isNotEmpty() && !isGenerating && isReady) {
+            input = ""
+            messages.add(ChatMessage(role = Role.User, text = question))
+            val assistantMessage = ChatMessage(role = Role.Assistant, text = "")
+            messages.add(assistantMessage)
+            val placeholderIndex = messages.lastIndex
+            isGenerating = true
+            scope.launch {
+                val builder = StringBuilder()
+                try {
+                    GemmaInference.generateStream(
+                        prompt = PromptTemplates.TrainingQA.userPrompt(question),
+                        systemInstruction = PromptTemplates.TrainingQA.systemInstruction
+                    ).catch { t ->
+                        // Catches Flow-side errors emitted during collection.
+                        // Surfaced as the assistant message so the user sees
+                        // it instead of a silent failure.
+                        builder.clear()
+                        builder.append(
+                            "Sorry, I could not generate an answer right now. " +
+                                "(${t.message.orEmpty()})"
+                        )
+                    }.collect { token ->
+                        builder.append(token)
+                        messages[placeholderIndex] = assistantMessage.copy(
+                            text = builder.toString()
+                        )
+                    }
+                    // Final flush in case the catch block populated the
+                    // builder without an emit triggering a recomposition.
+                    messages[placeholderIndex] = assistantMessage.copy(
+                        text = builder.toString().ifEmpty { assistantMessage.text }
+                    )
+                } catch (t: Throwable) {
+                    // Defensive catch: any error that escapes the Flow's own
+                    // .catch (e.g. an upstream synchronous throw before the
+                    // Flow even exists) lands here and becomes a visible
+                    // assistant message rather than crashing the activity.
+                    messages[placeholderIndex] = assistantMessage.copy(
+                        text = "Sorry, I could not generate an answer right now. " +
+                            "(${t.message.orEmpty()})"
+                    )
+                } finally {
+                    isGenerating = false
+                }
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -151,21 +210,19 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
                 items(messages) { message ->
                     MessageBubble(message = message)
                 }
-                if (isGenerating && messages.lastOrNull()?.role == Role.User) {
+                // Starter-question chips below the welcome message. Visible
+                // only while the chat is still in its initial seeded state
+                // (one assistant message, no user messages yet). Tapping a
+                // chip submits the same way the input bar does, so judges
+                // and first-time CHWs can get a real answer streaming in
+                // without typing anything.
+                if (messages.size == 1 && messages.first().role == Role.Assistant) {
                     item {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(14.dp),
-                                strokeWidth = 2.dp,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            Spacer(Modifier.size(8.dp))
-                            Text(
-                                "Mira is thinking.",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
+                        SuggestedQuestionChips(
+                            questions = SUGGESTED_QUESTIONS,
+                            enabled = isReady && !isGenerating,
+                            onChipClick = sendQuestion
+                        )
                     }
                 }
             }
@@ -178,56 +235,7 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
                 value = input,
                 onValueChange = { input = it },
                 enabled = !isGenerating && isReady,
-                onSend = {
-                    val question = input.trim()
-                    if (question.isEmpty() || isGenerating || !isReady) return@InputBar
-                    input = ""
-                    messages.add(ChatMessage(role = Role.User, text = question))
-                    val assistantMessage = ChatMessage(role = Role.Assistant, text = "")
-                    messages.add(assistantMessage)
-                    val placeholderIndex = messages.lastIndex
-                    isGenerating = true
-                    scope.launch {
-                        val builder = StringBuilder()
-                        try {
-                            GemmaInference.generateStream(
-                                prompt = PromptTemplates.TrainingQA.userPrompt(question),
-                                systemInstruction = PromptTemplates.TrainingQA.systemInstruction
-                            ).catch { t ->
-                                // Catches Flow-side errors emitted during
-                                // collection. Surfaced as the assistant
-                                // message so the user sees it.
-                                builder.clear()
-                                builder.append(
-                                    "Sorry, I could not generate an answer right now. " +
-                                        "(${t.message.orEmpty()})"
-                                )
-                            }.collect { token ->
-                                builder.append(token)
-                                messages[placeholderIndex] = assistantMessage.copy(
-                                    text = builder.toString()
-                                )
-                            }
-                            // Final flush in case the catch block updated the
-                            // builder without emit triggering a recomposition.
-                            messages[placeholderIndex] = assistantMessage.copy(
-                                text = builder.toString().ifEmpty { assistantMessage.text }
-                            )
-                        } catch (t: Throwable) {
-                            // Defensive catch: any error that escapes the
-                            // Flow's own .catch (e.g. an upstream synchronous
-                            // throw before the Flow exists) lands here and
-                            // becomes a visible assistant message instead of
-                            // crashing the activity.
-                            messages[placeholderIndex] = assistantMessage.copy(
-                                text = "Sorry, I could not generate an answer right now. " +
-                                    "(${t.message.orEmpty()})"
-                            )
-                        } finally {
-                            isGenerating = false
-                        }
-                    }
-                }
+                onSend = { sendQuestion(input) }
             )
         }
     }
@@ -274,15 +282,23 @@ private fun MessageBubble(message: ChatMessage) {
                 .background(bubbleColor)
                 .padding(horizontal = 14.dp, vertical = 10.dp)
         ) {
-            if (isUser) {
-                Text(
+            when {
+                isUser -> Text(
                     text = message.text.ifEmpty { " " },
                     style = MaterialTheme.typography.bodyLarge,
                     color = textColor
                 )
-            } else {
-                MarkdownText(
-                    text = message.text.ifEmpty { " " },
+                // Empty assistant bubble means the placeholder has been
+                // added but Gemma has not produced its first token yet.
+                // Render the typing dots inside the bubble itself so the
+                // visual transition from "thinking" to "answering" is just
+                // the dots being replaced by streamed text in the same
+                // surface, the way iMessage and WhatsApp do it.
+                message.text.isEmpty() -> TypingDotsIndicator(
+                    dotColor = MaterialTheme.colorScheme.primary
+                )
+                else -> MarkdownText(
+                    text = message.text,
                     style = MaterialTheme.typography.bodyLarge,
                     color = textColor
                 )
@@ -425,6 +441,58 @@ private fun GemmaStatusBanner(state: GemmaInference.State) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             GemmaInference.State.Ready -> Unit
+        }
+    }
+}
+
+/**
+ * Pre-seeded starter questions surfaced as tappable chips below the welcome
+ * message. Cover the four most common CHW knowledge gaps for VIA: anatomy,
+ * referral decision, timing, and reference baseline. Phrased the way a CHW
+ * would actually ask, not the way a textbook would title a section.
+ */
+private val SUGGESTED_QUESTIONS = listOf(
+    "How do I find the transformation zone?",
+    "When should I refer a patient?",
+    "How long do I wait after applying acetic acid?",
+    "What does a normal cervix look like?"
+)
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SuggestedQuestionChips(
+    questions: List<String>,
+    enabled: Boolean,
+    onChipClick: (String) -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = "Try one of these",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
+        )
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            questions.forEach { question ->
+                SuggestionChip(
+                    onClick = { onChipClick(question) },
+                    enabled = enabled,
+                    label = {
+                        Text(
+                            text = question,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    },
+                    shape = RoundedCornerShape(16.dp),
+                    colors = SuggestionChipDefaults.suggestionChipColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        labelColor = MaterialTheme.colorScheme.onSurface
+                    )
+                )
+            }
         }
     }
 }
