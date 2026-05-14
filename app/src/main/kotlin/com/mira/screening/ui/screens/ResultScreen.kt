@@ -356,6 +356,27 @@ fun ResultScreen(
                         localeToLanguageName(Locale.getDefault().language)
                     },
                     isSpeaking = speakingUtteranceId == "mira-explain",
+                    onNarrationReady = { text, language ->
+                        // Persist the generated narration onto the existing
+                        // screening record so the History detail view can
+                        // replay it later without paying a second 10-30s
+                        // generation cost. The record itself was saved
+                        // earlier (during processing), so this is an update,
+                        // not a fresh insert; we re-use save() with the
+                        // bitmap=null / persistImage=false pattern that
+                        // already handles "update existing".
+                        val existing = repo.list().firstOrNull { it.id == captureId }
+                        if (existing != null) {
+                            repo.save(
+                                existing.copy(
+                                    narration = text,
+                                    narrationLanguage = language
+                                ),
+                                bitmap = null,
+                                persistImage = false
+                            )
+                        }
+                    },
                     onPlayPressed = { textToSpeak ->
                         if (speakingUtteranceId == "mira-explain") {
                             tts.stop()

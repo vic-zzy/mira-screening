@@ -80,6 +80,8 @@ class ScreeningRepository(private val context: Context) {
         put("imagePath", imagePath ?: JSONObject.NULL)
         put("notes", notes ?: JSONObject.NULL)
         put("userOverride", userOverride?.name ?: JSONObject.NULL)
+        put("narration", narration ?: JSONObject.NULL)
+        put("narrationLanguage", narrationLanguage ?: JSONObject.NULL)
     }
 
     private fun JSONObject.toRecord(): ScreeningRecord = ScreeningRecord(
@@ -91,6 +93,14 @@ class ScreeningRepository(private val context: Context) {
         imagePath = if (isNull("imagePath")) null else optString("imagePath").ifBlank { null },
         notes = if (isNull("notes")) null else optString("notes").ifBlank { null },
         userOverride = if (!has("userOverride") || isNull("userOverride")) null
-        else ViaClassification.valueOf(getString("userOverride"))
+        else ViaClassification.valueOf(getString("userOverride")),
+        // Read narration fields defensively: records written by older builds
+        // without these keys still decode cleanly with narration = null and
+        // narrationLanguage = null, in which case the History detail view
+        // simply hides the Mira-explains card for that record.
+        narration = if (!has("narration") || isNull("narration")) null
+        else optString("narration").ifBlank { null },
+        narrationLanguage = if (!has("narrationLanguage") || isNull("narrationLanguage")) null
+        else optString("narrationLanguage").ifBlank { null }
     )
 }

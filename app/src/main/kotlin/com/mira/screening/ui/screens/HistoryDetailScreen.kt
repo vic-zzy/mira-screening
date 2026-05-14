@@ -1,6 +1,11 @@
 package com.mira.screening.ui.screens
 
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.media.AudioManager
+import android.os.Bundle
+import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,8 +20,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
@@ -30,6 +37,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +55,7 @@ import com.mira.screening.R
 import com.mira.screening.data.ScreeningRecord
 import com.mira.screening.data.ScreeningRepository
 import com.mira.screening.inference.ViaClassification
+import com.mira.screening.ui.components.MiraExplainsCard
 import com.mira.screening.ui.theme.miraStatus
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -68,6 +77,69 @@ fun HistoryDetailScreen(
         val r = repo.list().firstOrNull { it.id == recordId }
         record = r
         bitmap = r?.imagePath?.let { BitmapFactory.decodeFile(it) }
+    }
+
+    // TTS plumbing for the "Play" button inside the saved Mira-explains card.
+    // Mirrors ResultScreen's setup: prefer Google's higher-quality engine
+    // when installed, fall back to system default. ttsConfigured gates the
+    // button so the first click does not race against voice selection. Voice
+    // is locked to the saved narrationLanguage if we can map it back to a
+    // locale, so a Spanish narration plays through a Spanish voice even if
+    // the device has since been switched to English.
+    var ttsReady by remember { mutableStateOf(false) }
+    var ttsConfigured by remember { mutableStateOf(false) }
+    var speakingUtteranceId by remember { mutableStateOf<String?>(null) }
+    val preferredTtsEngine = remember {
+        try {
+            context.packageManager.getPackageInfo("com.google.android.tts", 0)
+            "com.google.android.tts"
+        } catch (_: PackageManager.NameNotFoundException) {
+            null
+        }
+    }
+    val tts = remember {
+        TextToSpeech(
+            context,
+            { status -> ttsReady = status == TextToSpeech.SUCCESS },
+            preferredTtsEngine
+        )
+    }
+    DisposableEffect(tts) {
+        tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+            override fun onStart(utteranceId: String?) {
+                speakingUtteranceId = utteranceId
+            }
+            override fun onDone(utteranceId: String?) {
+                speakingUtteranceId = null
+            }
+            @Deprecated("Deprecated in API 21")
+            override fun onError(utteranceId: String?) {
+                speakingUtteranceId = null
+            }
+        })
+        onDispose {
+            tts.stop()
+            tts.shutdown()
+        }
+    }
+    LaunchedEffect(ttsReady, record?.narrationLanguage) {
+        if (!ttsReady) return@LaunchedEffect
+        // Prefer the locale the narration was originally generated in, so a
+        // Spanish text gets read by a Spanish voice even when the device is
+        // currently English. Fall back to device locale if we have no saved
+        // language or cannot map it.
+        val targetLocale = record?.narrationLanguage
+            ?.let { languageNameToLocale(it) }
+            ?: Locale.getDefault()
+        tts.language = targetLocale
+        val voices = tts.voices
+        val best = voices?.filter { v ->
+            v.locale.language == targetLocale.language && !v.isNetworkConnectionRequired
+        }?.maxByOrNull { it.quality }
+        if (best != null) {
+            tts.voice = best
+        }
+        ttsConfigured = true
     }
 
     val r = record
@@ -113,6 +185,7 @@ fun HistoryDetailScreen(
             Column(
                 modifier = Modifier
                     .weight(1f)
+                    .verticalScroll(rememberScrollState())
                     .padding(horizontal = 24.dp, vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -146,6 +219,53 @@ fun HistoryDetailScreen(
                 }
 
                 DetailCard(record = r)
+
+                // Replay the saved Mira narration if this record has one.
+                // Records captured before the persistence feature shipped have
+                // narration = null and the card is hidden entirely rather
+                // than running a fresh generation, because re-generating in
+                // History is expensive (10-30s on emulator) and the original
+                // wording is what the CHW actually communicated to the
+                // patient. We pass placeholder values for resultLabel /
+                // confidence / heatmapFocus because the cached-narration
+                // path short-circuits the generation prompt and never reads
+                // those fields.
+                val savedNarration = r.narration
+                if (savedNarration != null) {
+                    MiraExplainsCard(
+                        resultLabel = "",
+                        confidencePercent = (r.confidence * 100).toInt(),
+                        heatmapFocus = "",
+                        languageName = r.narrationLanguage ?: "English",
+                        isSpeaking = speakingUtteranceId == "mira-history",
+                        cachedNarration = savedNarration,
+                        onPlayPressed = { textToSpeak ->
+                            if (speakingUtteranceId == "mira-history") {
+                                tts.stop()
+                                speakingUtteranceId = null
+                            } else if (ttsConfigured) {
+                                val params = Bundle().apply {
+                                    putString(
+                                        TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
+                                        "mira-history"
+                                    )
+                                    putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, 1.0f)
+                                    putFloat(TextToSpeech.Engine.KEY_PARAM_PAN, 0.0f)
+                                    putInt(
+                                        TextToSpeech.Engine.KEY_PARAM_STREAM,
+                                        AudioManager.STREAM_MUSIC
+                                    )
+                                }
+                                tts.speak(
+                                    textToSpeak,
+                                    TextToSpeech.QUEUE_FLUSH,
+                                    params,
+                                    "mira-history"
+                                )
+                            }
+                        }
+                    )
+                }
             }
 
             Box(
@@ -306,3 +426,24 @@ private fun DetailCard(record: ScreeningRecord) {
 
 private fun formatDateTime(ms: Long): String =
     SimpleDateFormat("MMM d, yyyy · hh:mm a", Locale.getDefault()).format(Date(ms))
+
+/**
+ * Inverse of ResultScreen's localeToLanguageName: turn an English language
+ * label saved with a screening record (e.g. "Spanish", "Swahili") back into a
+ * Locale we can hand to TextToSpeech.setLanguage. Returns null on unknown
+ * inputs so the caller can fall back to the device locale rather than
+ * misroute the TTS voice. The list mirrors the ten languages Mira ships in.
+ */
+private fun languageNameToLocale(name: String): Locale? = when (name.lowercase()) {
+    "english" -> Locale.ENGLISH
+    "spanish" -> Locale("es")
+    "portuguese" -> Locale("pt")
+    "french" -> Locale.FRENCH
+    "swahili" -> Locale("sw")
+    "hausa" -> Locale("ha")
+    "yoruba" -> Locale("yo")
+    "igbo" -> Locale("ig")
+    "luganda" -> Locale("lg")
+    "quechua" -> Locale("qu")
+    else -> null
+}

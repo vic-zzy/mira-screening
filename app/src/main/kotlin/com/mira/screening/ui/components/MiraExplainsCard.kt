@@ -60,6 +60,14 @@ fun MiraExplainsCard(
     heatmapFocus: String,
     languageName: String,
     isSpeaking: Boolean = false,
+    // When non-null, the card skips generation entirely and renders this text
+    // immediately as a Loaded narration. Used by the History detail view to
+    // replay a previously-saved narration without paying generation cost.
+    cachedNarration: String? = null,
+    // Fires exactly once when a fresh generation completes successfully,
+    // carrying the final text and the language it was written in so the
+    // caller can persist it. Never fires when [cachedNarration] is set.
+    onNarrationReady: (text: String, languageName: String) -> Unit = { _, _ -> },
     onPlayPressed: (text: String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -75,13 +83,22 @@ fun MiraExplainsCard(
     // user watches the narration write itself one token at a time. The
     // play button is gated on the Streaming -> Loaded transition so users
     // cannot accidentally TTS-read a half-generated explanation.
+    //
+    // Short-circuit: if the caller supplied a cachedNarration (History
+    // detail view replaying a saved one), skip generation entirely and
+    // render it directly as Loaded.
     LaunchedEffect(
         gemmaState is GemmaInference.State.Ready,
         resultLabel,
         confidencePercent,
         heatmapFocus,
-        languageName
+        languageName,
+        cachedNarration
     ) {
+        if (cachedNarration != null) {
+            narration = NarrationState.Loaded(text = cachedNarration)
+            return@LaunchedEffect
+        }
         if (gemmaState !is GemmaInference.State.Ready) return@LaunchedEffect
         narration = NarrationState.Loading
         val builder = StringBuilder()
@@ -103,7 +120,11 @@ fun MiraExplainsCard(
                 narration = NarrationState.Streaming(partial = builder.toString().trim())
             }
             if (!streamErrored && builder.isNotEmpty()) {
-                narration = NarrationState.Loaded(text = builder.toString().trim())
+                val finalText = builder.toString().trim()
+                narration = NarrationState.Loaded(text = finalText)
+                // Notify the caller exactly once on a clean completion so they
+                // can persist the narration alongside the rest of the record.
+                onNarrationReady(finalText, languageName)
             }
         } catch (t: Throwable) {
             // Upstream throw before the Flow even starts (e.g. engine
@@ -127,6 +148,7 @@ fun MiraExplainsCard(
                 gemmaState = gemmaState,
                 narration = narration,
                 isSpeaking = isSpeaking,
+                hasCachedNarration = cachedNarration != null,
                 onPlayPressed = onPlayPressed
             )
         }
@@ -162,8 +184,23 @@ private fun BodyContent(
     gemmaState: GemmaInference.State,
     narration: NarrationState,
     isSpeaking: Boolean,
+    hasCachedNarration: Boolean,
     onPlayPressed: (text: String) -> Unit
 ) {
+    // Cached-narration path (History detail view): we already have the text
+    // in hand, so Gemma's engine state is irrelevant. Skip the download /
+    // loading / error dispatch entirely and render the narration directly.
+    // Without this, a user who opens History while Gemma is still
+    // downloading would see a download progress bar inside the card instead
+    // of their saved narration, which makes no sense.
+    if (hasCachedNarration) {
+        NarrationBody(
+            narration = narration,
+            isSpeaking = isSpeaking,
+            onPlayPressed = onPlayPressed
+        )
+        return
+    }
     when (gemmaState) {
         is GemmaInference.State.Downloading -> DownloadingBody(state = gemmaState)
         is GemmaInference.State.LoadingEngine -> LoadingEngineBody()
