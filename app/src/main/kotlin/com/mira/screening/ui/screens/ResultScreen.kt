@@ -98,6 +98,15 @@ fun ResultScreen(
     val context = LocalContext.current
     val repo = remember { ScreeningRepository(context) }
     var ttsReady by remember { mutableStateOf(false) }
+    // True only after the voice-selection LaunchedEffect has finished
+    // configuring tts.language and tts.voice. Without this gate, the play
+    // button enables the instant onInit reports SUCCESS, and the first
+    // user click races against the voice setup (enumerating tts.voices
+    // is slow on some engines). The race manifests as "I clicked play
+    // and nothing happened, then I clicked again and it worked": the
+    // first speak gets silently dropped because the engine is mid-
+    // reconfigure. Gating on ttsConfigured eliminates the race.
+    var ttsConfigured by remember { mutableStateOf(false) }
     // The id of the utterance currently being spoken, or null when idle.
     // Two play buttons share the same TextToSpeech instance (the top
     // "Play result" chip and the Mira card's Play/Stop button), so each
@@ -157,15 +166,32 @@ fun ResultScreen(
         if (!ttsReady) return@LaunchedEffect
         val locale = Locale.getDefault()
         tts.language = locale
-        val voices = tts.voices ?: return@LaunchedEffect
+        val voices = tts.voices
         val best = voices
-            .filter { v ->
+            ?.filter { v ->
                 v.locale.language == locale.language && !v.isNetworkConnectionRequired
             }
-            .maxByOrNull { it.quality }
+            ?.maxByOrNull { it.quality }
         if (best != null) {
             tts.voice = best
+            android.util.Log.i(
+                "ResultScreen",
+                "TTS voice selected: ${best.name} (quality=${best.quality}, " +
+                    "engine=${tts.defaultEngine})"
+            )
+        } else {
+            android.util.Log.w(
+                "ResultScreen",
+                "No offline TTS voice found for $locale; using engine default " +
+                    "(engine=${tts.defaultEngine}). " +
+                    "Voice will sound robotic if the engine is AOSP Pico " +
+                    "instead of Google TTS (com.google.android.tts)."
+            )
         }
+        // Mark fully configured regardless of whether a better voice was
+        // found, so the play buttons enable even on emulators where
+        // tts.voices comes back null or empty.
+        ttsConfigured = true
     }
 
     val effectiveClassification = override ?: result.classification
@@ -285,7 +311,7 @@ fun ResultScreen(
                                 tts.speak("$label. $action", TextToSpeech.QUEUE_FLUSH, params, "mira-result")
                             }
                         },
-                        enabled = ttsReady,
+                        enabled = ttsConfigured,
                         shape = RoundedCornerShape(50),
                         colors = AssistChipDefaults.assistChipColors(),
                         label = {
