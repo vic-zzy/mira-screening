@@ -139,6 +139,15 @@ fun HistoryDetailScreen(
         if (best != null) {
             tts.voice = best
         }
+        // Pre-warm the synthesizer (silent utterance, volume 0) so the
+        // first Play click on the history record lands on a primed engine
+        // and starts speaking immediately. See the longer comment in
+        // ResultScreen for the rationale.
+        val warmupParams = Bundle().apply {
+            putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, 0.0f)
+            putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "tts-prewarm")
+        }
+        tts.speak(" ", TextToSpeech.QUEUE_ADD, warmupParams, "tts-prewarm")
         ttsConfigured = true
     }
 

@@ -188,6 +188,18 @@ fun ResultScreen(
                     "instead of Google TTS (com.google.android.tts)."
             )
         }
+        // Pre-warm the synthesizer with a silent utterance (volume 0). The
+        // first speak() call has to allocate audio buffers, set up the
+        // audio session, and decompress the chosen voice; without this
+        // warmup the user's first Play click lands on a cold engine and
+        // takes a couple of seconds to start emitting audio, which feels
+        // like the button is broken. Synthesis still happens here, it just
+        // does not play out loud.
+        val warmupParams = Bundle().apply {
+            putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, 0.0f)
+            putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "tts-prewarm")
+        }
+        tts.speak(" ", TextToSpeech.QUEUE_ADD, warmupParams, "tts-prewarm")
         // Mark fully configured regardless of whether a better voice was
         // found, so the play buttons enable even on emulators where
         // tts.voices comes back null or empty.

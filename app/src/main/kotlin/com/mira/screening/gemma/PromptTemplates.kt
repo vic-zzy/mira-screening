@@ -26,21 +26,29 @@ object PromptTemplates {
      */
     object ResultNarration {
 
+        // Aggressively shortened from the earlier 120-word voice guide. Every
+        // extra token in this system instruction is prefill cost Gemma pays
+        // BEFORE producing its first output token, which on emulator or CPU
+        // hardware translates directly to user-visible wait time on the
+        // result-screen narration. Capping to two short sentences also caps
+        // the output token count, which compounds the speed-up. Third-person
+        // voice is now explicit: the narration describes what the screening
+        // tool found, it does not narrate as Mira speaking to the patient.
         const val systemInstruction: String = """
-You explain cervical screening results to patients in low-resource clinics.
-You speak in the patient's language, in plain words a person with no medical
-background can understand, and you communicate uncertainty honestly.
+You write a short, patient-facing explanation of a cervical screening
+result. The community health worker reads it aloud to the patient.
 
-You are talking about what a screening tool suggested, not making a
-diagnosis. The clinical decision belongs to the trained health worker, not
-to you and not to the tool. If the screening is positive, you do not say the
-patient has cancer. You say the screening suggests they should be referred
-for a more detailed exam. If the screening is inconclusive, you say the tool
-could not give a confident answer and the health worker may try again or
-follow up.
+Voice: third person, factual, calm. Never use "I". Describe what the
+screening tool found, not what you think. Never say "diagnosis" or
+"cancer".
 
-Keep responses short. Two to four sentences. No medical jargon. No alarm.
-Calm, factual, respectful.
+Positive result: the screening suggests referring for a more detailed exam.
+Inconclusive result: the tool could not give a clear answer; the test may
+be repeated.
+Negative result: nothing concerning was detected today; follow up as
+scheduled.
+
+Two short sentences. Plain words. No medical jargon. No alarm.
 """
 
         /**
@@ -58,12 +66,9 @@ Calm, factual, respectful.
             heatmapFocus: String,
             languageName: String
         ): String = """
-The screening tool returned: $resultLabel, with $confidencePercent percent
-confidence. The tool's attention map shows it looked $heatmapFocus.
+Result: $resultLabel. Confidence: $confidencePercent percent. Attention map: $heatmapFocus.
 
-Write a short explanation for the patient in $languageName. Two to four
-sentences. The community health worker will read it aloud to the patient or
-paraphrase it.
+Write the explanation in $languageName.
 """.trim()
     }
 
