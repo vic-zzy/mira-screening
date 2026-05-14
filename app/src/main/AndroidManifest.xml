@@ -4,6 +4,13 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <!-- INTERNET is used exactly once, on first launch, to download Gemma 4's
+         model file (~2.4 GB) from the official LiteRT-LM mirror on Hugging
+         Face. After that the app is fully offline; no patient images, results,
+         or telemetry ever leave the phone. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <uses-feature
         android:name="android.hardware.camera.any"
         android:required="true" />

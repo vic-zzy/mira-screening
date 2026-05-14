@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -21,10 +22,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.outlined.AutoAwesome
+import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -33,6 +36,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -72,6 +76,8 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
     var input by remember { mutableStateOf("") }
     var isGenerating by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
+    val gemmaState by GemmaInference.state.collectAsState()
+    val isReady = gemmaState is GemmaInference.State.Ready
 
     // On first composition, seed the conversation with an introductory
     // assistant message so the empty-chat state isn't bare. This is local
@@ -149,13 +155,17 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
                 }
             }
 
+            if (!isReady) {
+                GemmaStatusBanner(state = gemmaState)
+            }
+
             InputBar(
                 value = input,
                 onValueChange = { input = it },
-                enabled = !isGenerating,
+                enabled = !isGenerating && isReady,
                 onSend = {
                     val question = input.trim()
-                    if (question.isEmpty() || isGenerating) return@InputBar
+                    if (question.isEmpty() || isGenerating || !isReady) return@InputBar
                     input = ""
                     messages.add(ChatMessage(role = Role.User, text = question))
                     val assistantMessage = ChatMessage(role = Role.Assistant, text = "")
@@ -312,6 +322,95 @@ private fun InputBar(
             )
         }
     }
+}
+
+/**
+ * Shown above the input bar while Gemma's initialization pipeline is still in
+ * flight. Mirrors the state machine in [MiraExplainsCard] so the CHW gets
+ * consistent feedback wherever the model is being prepared: a progress bar for
+ * the one-time download, a spinner while LiteRT-LM warms up, or a friendly
+ * error string if any step failed.
+ */
+@Composable
+private fun GemmaStatusBanner(state: GemmaInference.State) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .padding(12.dp)
+    ) {
+        when (state) {
+            is GemmaInference.State.Downloading -> {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Outlined.CloudDownload,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = "Downloading Mira's reasoning model",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(Modifier.weight(1f))
+                    Text(
+                        text = "${state.percent}%",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                Spacer(Modifier.height(8.dp))
+                LinearProgressIndicator(
+                    progress = { state.percent / 100f },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(6.dp)
+                        .clip(RoundedCornerShape(3.dp)),
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.outlineVariant
+                )
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text = "One-time download. The model stays on this phone afterwards. " +
+                        "${formatBytes(state.bytesDownloaded)} of ${formatBytes(state.totalBytes)}.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            GemmaInference.State.LoadingEngine,
+            GemmaInference.State.Idle -> Row(verticalAlignment = Alignment.CenterVertically) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(16.dp),
+                    strokeWidth = 2.dp,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    text = "Loading the on-device reasoning model.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            is GemmaInference.State.Error -> Text(
+                text = "Mira could not load her reasoning model right now. " +
+                    "(${state.message.take(100)})",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            GemmaInference.State.Ready -> Unit
+        }
+    }
+}
+
+private fun formatBytes(bytes: Long): String {
+    val gb = bytes / (1024.0 * 1024.0 * 1024.0)
+    if (gb >= 1.0) return "%.2f GB".format(gb)
+    val mb = bytes / (1024.0 * 1024.0)
+    return "%.0f MB".format(mb)
 }
 
 private enum class Role { User, Assistant }

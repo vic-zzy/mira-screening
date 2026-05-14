@@ -39,7 +39,7 @@ Mira uses Gemma 4 as the language, reasoning, and orchestration layer around a d
 ## Architecture
 
 - **Image classifier:** a fine-tuned vision transformer, exported to TensorFlow Lite, running on-device.
-- **Language and reasoning layer:** Gemma 4 (smallest variant) running on-device via MediaPipe LLM Inference.
+- **Language and reasoning layer:** Gemma 4 E2B-IT running on-device via the Google AI Edge LiteRT-LM SDK, with GPU acceleration where available and automatic CPU fallback elsewhere.
 - **Capture pipeline:** CameraX with motion-aware multi-frame averaging, a heuristic content validity gate, and live image-quality feedback.
 - **Confidence gating:** predictions below a user-set threshold are routed to "Inconclusive" rather than delivered as a low-confidence positive or negative.
 - **Persistence:** sandboxed local storage. No cloud sync.
@@ -60,16 +60,19 @@ Requirements:
 
 - Android Studio (Iguana or later)
 - JDK 17+
-- An Android device or emulator running Android 7.0 (API 24) or later
+- An Android device or emulator running Android 7.0 (API 24) or later with at least 4 GB of RAM (the Gemma 4 E2B model needs the headroom)
+- An internet connection on first launch only
 
 Steps:
 
 1. Clone the repo and open it in Android Studio.
-2. Download the Gemma 4 E2B-IT LiteRT-LM model file from [litert-community/gemma-4-E2B-it-litert-lm on Hugging Face](https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm). Pick the generic cross-platform variant: `gemma-4-E2B-it.litertlm` (~2.6 GB). Rename it to `gemma4.litertlm` and place it at `app/src/main/assets/gemma4.litertlm`.
-3. Download the cervical classifier `via_model.tflite` (~84 MB) from this repository's [Releases page](https://github.com/vic-zzy/mira-screening/releases). Place it at `app/src/main/assets/via_model.tflite`.
-4. Hit Run. Android Studio handles the rest.
+2. Hit Run.
 
-If you would rather skip the rebuild and just try Mira on your phone, the [Releases page](https://github.com/vic-zzy/mira-screening/releases) also ships a pre-built APK with both models already bundled inside.
+That is the whole build. The cervical classifier (`via_model.tflite`, ~84 MB) is bundled with the source tree at `app/src/main/assets/via_model.tflite`, so it goes into the APK directly. The Gemma 4 E2B-IT LiteRT-LM model (~2.4 GB) is **fetched on first launch** from the official [litert-community/gemma-4-E2B-it-litert-lm](https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm) Hugging Face mirror, cached at the app's private `filesDir`, and reused on every subsequent launch with no network access. Downloads support HTTP range resume, so a dropped connection mid-download picks up where it left off rather than restarting.
+
+The `INTERNET` permission in the manifest exists exclusively for this one-time fetch. After the model is cached, the app is fully offline and no patient images, screening results, or telemetry ever leave the phone.
+
+If you would rather skip the build and try Mira on your phone, the [Releases page](https://github.com/vic-zzy/mira-screening/releases) ships a pre-built APK. The classifier is bundled inside; Gemma 4 downloads itself on first run the same way.
 
 ## License
 

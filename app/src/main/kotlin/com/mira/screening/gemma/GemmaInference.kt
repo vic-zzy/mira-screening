@@ -10,6 +10,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
@@ -17,39 +21,100 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.FileOutputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 /**
  * On-device Gemma 4 inference, wrapped around the Google AI Edge LiteRT-LM SDK.
  *
- * Loads the `gemma4.litertlm` model from the app's internal files directory
- * and exposes synchronous and streaming generation APIs to the rest of the
- * app. The model file is NOT bundled inside the APK because its size
- * (~2.6 GB) exceeds the 2 GB Java array limit that the Android asset
- * packaging pipeline hits during compressDebugAssets. Instead, the model is
- * distributed separately (see README) and must be placed at the path
- * `context.filesDir/gemma4.litertlm` before Gemma can initialize. In a
- * production build the app would download it on first launch.
+ * On first launch the model file (~2.4 GB) is downloaded from the official
+ * Google-blessed Hugging Face mirror at litert-community/gemma-4-E2B-it-
+ * litert-lm and cached at `<filesDir>/gemma4.litertlm`. On subsequent launches
+ * the cached file is loaded directly with no network access. Downloads
+ * support range-based resume so a dropped connection mid-download can pick
+ * up where it left off rather than restart from zero.
  *
- * Initialization is ~10 seconds on a mid-range Android phone, so it runs in
- * a background coroutine kicked off from MiraApp.onCreate. UI surfaces that
- * need Gemma either wait via `waitUntilReady()` or check `isReady` and show
- * a loading state. If the model file is missing or initialization fails, the
- * exception is swallowed at the engine level (logged but not propagated) and
- * consumer code sees `isReady == false`; the consumer surfaces a friendly
- * error to the user instead of crashing the app.
+ * The full initialization sequence runs in a background coroutine kicked off
+ * from MiraApp.onCreate. UI surfaces observe the public `state` StateFlow to
+ * render either a download progress bar, an "engine loading" indicator, or
+ * the actual generated content once ready.
  *
- * Thread-safe: a single Mutex serializes initialization, and the underlying
+ * If anything in the init path fails (no network on first launch, disk full,
+ * LiteRT-LM native init error), the exception is caught and surfaced as
+ * State.Error rather than crashing the app. Consumer code sees `isReady ==
+ * false` and renders a friendly error message.
+ *
+ * Thread-safe: a single Mutex serializes initialization. The underlying
  * Engine handles its own concurrency for createConversation calls.
  */
 object GemmaInference {
 
     private const val INTERNAL_FILENAME = "gemma4.litertlm"
+    private const val TEMP_SUFFIX = ".part"
     private const val LOG_TAG = "GemmaInference"
+
+    // Official Google-blessed LiteRT-LM mirror of Gemma 4 E2B-IT on Hugging
+    // Face. Anonymous downloads work (verified) with a rate-limit warning
+    // header; we do not need a token. Range requests are supported, so we
+    // can resume partial downloads.
+    private const val MODEL_URL =
+        "https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm" +
+            "/resolve/main/gemma-4-E2B-it.litertlm"
+
+    // Expected size of the model file in bytes (the value reported by the
+    // mirror's x-linked-size header). Used to (a) detect a partially-
+    // downloaded cache from a previous failed run, (b) compute progress
+    // percentages before the Content-Length header has been parsed.
+    private const val EXPECTED_SIZE_BYTES = 2_588_147_712L
+
+    private const val DOWNLOAD_BUFFER_BYTES = 256 * 1024
+    private const val PROGRESS_EMIT_INTERVAL_BYTES = 4L * 1024L * 1024L
+    private const val HTTP_PARTIAL_CONTENT = 206
+    private const val NETWORK_CONNECT_TIMEOUT_MS = 30_000
+    private const val NETWORK_READ_TIMEOUT_MS = 60_000
+
+    /**
+     * The observable state of Gemma's initialization pipeline. UI surfaces
+     * collect this flow to render the right thing at the right moment.
+     */
+    sealed interface State {
+        /** Nothing started yet. */
+        data object Idle : State
+
+        /**
+         * The model file is being downloaded from the network. Used by the UI
+         * to render a progress bar and the human-readable percentage.
+         */
+        data class Downloading(
+            val bytesDownloaded: Long,
+            val totalBytes: Long
+        ) : State {
+            val percent: Int
+                get() = if (totalBytes > 0) {
+                    ((bytesDownloaded * 100) / totalBytes).toInt().coerceIn(0, 100)
+                } else {
+                    0
+                }
+        }
+
+        /** Download complete. The LiteRT-LM engine is now loading the model. */
+        data object LoadingEngine : State
+
+        /** Engine loaded. `generate` and `generateStream` will work. */
+        data object Ready : State
+
+        /** Something went wrong. The `message` is suitable to show to a user. */
+        data class Error(val message: String) : State
+    }
 
     @Volatile
     private var engine: Engine? = null
     private val initMutex = Mutex()
     private var initJob: Job? = null
+
+    private val _state = MutableStateFlow<State>(State.Idle)
+    val state: StateFlow<State> = _state.asStateFlow()
 
     /**
      * True if the engine is loaded and ready to serve generation requests.
@@ -58,7 +123,7 @@ object GemmaInference {
         get() = engine != null
 
     /**
-     * Kick off background initialization. Idempotent: subsequent calls return
+     * Kick off background initialization. Idempotent: subsequent calls reuse
      * the existing init job rather than reloading the model.
      *
      * Typical call site: MiraApp.onCreate.
@@ -69,15 +134,17 @@ object GemmaInference {
             try {
                 initMutex.withLock {
                     if (engine != null) return@withLock
-                    val modelFile = locateModelFile(context.applicationContext)
+                    val modelFile = ensureModelOnDisk(context.applicationContext)
+                    _state.value = State.LoadingEngine
                     val config = EngineConfig(modelPath = modelFile.absolutePath)
                     engine = Engine(config).also { it.initialize() }
+                    _state.value = State.Ready
                 }
             } catch (t: Throwable) {
-                // Swallow at the engine level so the app does not crash on
-                // missing model file or LiteRT-LM init failure. Consumer UI
-                // surfaces will show a friendly error instead.
                 android.util.Log.e(LOG_TAG, "Gemma 4 initialization failed", t)
+                _state.value = State.Error(
+                    t.message ?: "Mira could not load her AI model."
+                )
             }
         }
     }
@@ -96,10 +163,6 @@ object GemmaInference {
      * One-shot synchronous generation. Suspends until the engine is ready,
      * then runs a single send-message round trip. Returns the full assistant
      * response.
-     *
-     * @param prompt the user-side message
-     * @param systemInstruction optional persona/system prompt; per-call so
-     *   different reasoning surfaces can use the same engine
      */
     suspend fun generate(
         prompt: String,
@@ -114,8 +177,6 @@ object GemmaInference {
             systemInstruction = systemInstruction?.let { Contents.of(it) }
         )
         activeEngine.createConversation(convConfig).use { conv ->
-            // sendMessage(text) returns a Message; Message.toString() yields
-            // the text content of the model's reply.
             conv.sendMessage(prompt).toString()
         }
     }
@@ -124,8 +185,6 @@ object GemmaInference {
      * Streaming generation. Returns a Flow that emits the partial response as
      * the model generates it, then completes. The underlying conversation is
      * closed when the flow completes (whether normally or via cancellation).
-     *
-     * Used by the CHW assistant screen for token-by-token UI updates.
      */
     suspend fun generateStream(
         prompt: String,
@@ -133,11 +192,6 @@ object GemmaInference {
     ): Flow<String> {
         waitUntilReady()
         val activeEngine = engine
-        // Surface engine-missing as a flow-side error rather than a
-        // synchronous throw, so the consumer's .catch operator picks it up
-        // instead of crashing the launching coroutine. This guards against
-        // the case where startInitialization failed (missing model file,
-        // OOM, native init error) and engine remained null.
         if (activeEngine == null) {
             return flow {
                 throw IllegalStateException(
@@ -149,40 +203,119 @@ object GemmaInference {
             systemInstruction = systemInstruction?.let { Contents.of(it) }
         )
         val conversation = activeEngine.createConversation(convConfig)
-        // The Flow overload of sendMessageAsync only takes a Message, not a
-        // raw String; wrap the prompt in a user-role Message. The emitted
-        // Message tokens are converted to text via toString() in map().
         return conversation.sendMessageAsync(Message.user(prompt))
             .map { it.toString() }
             .onCompletion { conversation.close() }
     }
 
     /**
-     * Release the engine. Call from MiraApp.onTerminate or when the app
-     * decides Gemma is no longer needed. Idempotent.
+     * Release the engine. Idempotent.
      */
     fun close() {
         engine?.close()
         engine = null
         initJob = null
+        _state.value = State.Idle
     }
 
     /**
-     * Resolve the model file's location on disk. The model lives in the app's
-     * internal files directory at `<filesDir>/gemma4.litertlm`. If absent,
-     * throws with a clear message naming the expected path so testers can
-     * place the file via Android Studio Device File Explorer, adb push, or
-     * the future first-launch download flow.
+     * Resolve the model file on disk, downloading it from the Hugging Face
+     * mirror on first launch. Subsequent launches return immediately once the
+     * cached file is verified.
+     *
+     * Download strategy:
+     *   1. If `<filesDir>/gemma4.litertlm` exists and matches expected size,
+     *      return it directly.
+     *   2. If a partial `<filesDir>/gemma4.litertlm.part` exists from a
+     *      previous interrupted download, resume from that offset using an
+     *      HTTP Range request.
+     *   3. Otherwise start a fresh download.
+     *   4. Upon successful completion, atomically rename the `.part` file to
+     *      the final filename so a half-written file is never visible as the
+     *      "real" model.
      */
-    private suspend fun locateModelFile(context: Context): File =
+    private suspend fun ensureModelOnDisk(context: Context): File =
         withContext(Dispatchers.IO) {
-            val target = File(context.filesDir, INTERNAL_FILENAME)
-            check(target.exists() && target.length() > 0) {
-                "Gemma 4 model not found at ${target.absolutePath}. The " +
-                    "model file (gemma4.litertlm, ~2.6 GB) is distributed " +
-                    "separately. Place it at this path via Device File " +
-                    "Explorer or adb push before launching."
+            val finalFile = File(context.filesDir, INTERNAL_FILENAME)
+            if (finalFile.exists() && finalFile.length() == EXPECTED_SIZE_BYTES) {
+                return@withContext finalFile
             }
-            target
+            // Clear a stale file that doesn't match the expected size (e.g.
+            // from a previous run that crashed mid-rename).
+            if (finalFile.exists() && finalFile.length() != EXPECTED_SIZE_BYTES) {
+                finalFile.delete()
+            }
+            val partFile = File(context.filesDir, "$INTERNAL_FILENAME$TEMP_SUFFIX")
+            downloadModel(partFile)
+            if (!partFile.renameTo(finalFile)) {
+                throw IllegalStateException(
+                    "Could not finalize model file at ${finalFile.absolutePath}"
+                )
+            }
+            finalFile
         }
+
+    /**
+     * Download the model file to `partFile`, resuming from its existing size
+     * if non-empty. Emits State.Downloading updates roughly every
+     * PROGRESS_EMIT_INTERVAL_BYTES so the UI gets smooth progress without
+     * being flooded with state changes.
+     */
+    private fun downloadModel(partFile: File) {
+        val resumeFrom = if (partFile.exists()) partFile.length() else 0L
+        _state.value = State.Downloading(resumeFrom, EXPECTED_SIZE_BYTES)
+        val connection = (URL(MODEL_URL).openConnection() as HttpURLConnection).apply {
+            requestMethod = "GET"
+            connectTimeout = NETWORK_CONNECT_TIMEOUT_MS
+            readTimeout = NETWORK_READ_TIMEOUT_MS
+            setRequestProperty("User-Agent", "Mira-Hackathon/0.1.0")
+            if (resumeFrom > 0L) {
+                setRequestProperty("Range", "bytes=$resumeFrom-")
+            }
+            instanceFollowRedirects = true
+        }
+        try {
+            connection.connect()
+            val responseCode = connection.responseCode
+            val isResume = resumeFrom > 0L && responseCode == HTTP_PARTIAL_CONTENT
+            if (responseCode !in 200..299) {
+                throw IllegalStateException(
+                    "Download failed with HTTP $responseCode."
+                )
+            }
+            // If we asked to resume but the server returned 200 instead of
+            // 206, it ignored our Range header and is sending the whole file
+            // from scratch; truncate the part file to match.
+            val totalSize = when {
+                isResume -> resumeFrom + connection.contentLengthLong
+                connection.contentLengthLong > 0L -> connection.contentLengthLong
+                else -> EXPECTED_SIZE_BYTES
+            }
+            val output = if (isResume) {
+                FileOutputStream(partFile, true)
+            } else {
+                FileOutputStream(partFile, false)
+            }
+            output.use { sink ->
+                connection.inputStream.use { source ->
+                    val buffer = ByteArray(DOWNLOAD_BUFFER_BYTES)
+                    var written = if (isResume) resumeFrom else 0L
+                    var lastEmitted = written
+                    while (true) {
+                        val read = source.read(buffer)
+                        if (read <= 0) break
+                        sink.write(buffer, 0, read)
+                        written += read
+                        if (written - lastEmitted >= PROGRESS_EMIT_INTERVAL_BYTES) {
+                            _state.value = State.Downloading(written, totalSize)
+                            lastEmitted = written
+                        }
+                    }
+                    _state.value = State.Downloading(written, totalSize)
+                }
+            }
+        } finally {
+            connection.disconnect()
+        }
+    }
 }
