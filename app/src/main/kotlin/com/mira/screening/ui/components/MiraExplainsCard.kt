@@ -248,7 +248,7 @@ private fun NarrationBody(
             )
         }
         is NarrationState.Loaded -> Column {
-            Text(
+            MarkdownText(
                 text = narration.text,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface

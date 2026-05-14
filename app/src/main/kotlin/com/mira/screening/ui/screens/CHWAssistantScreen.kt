@@ -1,6 +1,7 @@
 package com.mira.screening.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,6 +51,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.mira.screening.gemma.GemmaInference
 import com.mira.screening.gemma.PromptTemplates
+import com.mira.screening.ui.components.MarkdownText
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -96,9 +98,16 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
     }
 
     // Auto-scroll to bottom as new tokens stream in or new messages arrive.
+    // animateScrollToItem only guarantees the item's TOP is in view, which
+    // leaves the tail of a long streamed answer cut off when the bubble is
+    // taller than the viewport. Nudging by Float.MAX_VALUE afterwards
+    // (clamped by Compose to the actual max scroll) puts the bottom of the
+    // bubble at the bottom of the viewport, so the user always sees the
+    // most recent tokens.
     LaunchedEffect(messages.size, messages.lastOrNull()?.text?.length) {
         if (messages.isNotEmpty()) {
             listState.animateScrollToItem(messages.size - 1)
+            listState.scrollBy(Float.MAX_VALUE)
         }
     }
 
@@ -259,11 +268,19 @@ private fun MessageBubble(message: ChatMessage) {
                 .background(bubbleColor)
                 .padding(horizontal = 14.dp, vertical = 10.dp)
         ) {
-            Text(
-                text = message.text.ifEmpty { " " },
-                style = MaterialTheme.typography.bodyLarge,
-                color = textColor
-            )
+            if (isUser) {
+                Text(
+                    text = message.text.ifEmpty { " " },
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = textColor
+                )
+            } else {
+                MarkdownText(
+                    text = message.text.ifEmpty { " " },
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = textColor
+                )
+            }
         }
     }
 }
