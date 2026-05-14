@@ -98,15 +98,21 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
     }
 
     // Auto-scroll to bottom as new tokens stream in or new messages arrive.
-    // animateScrollToItem only guarantees the item's TOP is in view, which
-    // leaves the tail of a long streamed answer cut off when the bubble is
-    // taller than the viewport. Nudging by Float.MAX_VALUE afterwards
-    // (clamped by Compose to the actual max scroll) puts the bottom of the
-    // bubble at the bottom of the viewport, so the user always sees the
-    // most recent tokens.
+    //
+    // We deliberately use the non-animated scrollToItem rather than
+    // animateScrollToItem here. During fast streaming the LaunchedEffect
+    // re-fires on every token, which would cancel an in-progress
+    // animateScrollToItem before the follow-up scrollBy(MAX) can run,
+    // leaving the bottom of a long answer perpetually clipped by the
+    // input bar. scrollToItem is synchronous and not cancel-mid-flight,
+    // so the subsequent scrollBy(MAX) reliably pins the bubble's bottom
+    // to the viewport bottom (Compose clamps the scroll to the actual
+    // max). The visual result during streaming is a smooth-feeling auto
+    // follow rather than a jump, because each token only changes the
+    // scroll by the height of a few extra characters.
     LaunchedEffect(messages.size, messages.lastOrNull()?.text?.length) {
         if (messages.isNotEmpty()) {
-            listState.animateScrollToItem(messages.size - 1)
+            listState.scrollToItem(messages.size - 1)
             listState.scrollBy(Float.MAX_VALUE)
         }
     }
