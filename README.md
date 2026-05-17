@@ -54,6 +54,8 @@ A few things deserve to be said directly.
 
 The image classifier inside Mira is decision support, not a diagnostic claim. The current baseline is a DINOv2-S/14 fine-tune trained on the public Intel/MobileODT corpus using transformation-zone type as a documented proxy for VIA-positive/negative. It reports AUC 0.71 on a held-out split of the same dataset. That number is a pipeline-validation baseline, not a clinical performance claim. Until the model is validated on a properly out-of-distribution clinical cohort, it should be read as a placeholder.
 
+Next iteration: extend the training mix with additional public VIA corpora (Cervix93 as an initial out-of-distribution cross-validation set, then IARC-atlas-aligned cohorts as they become available) and re-export with the same TFLite + XNNPack pipeline so the on-device runtime path stays identical while the model gets better.
+
 What this hackathon submission really demonstrates is an architecture pattern for clinical AI in low-resource settings. A real working mobile app that runs Gemma 4 on-device, communicates with patients in their language, supports a CHW's decision-making rather than replacing it, and is honest about what an image classifier can and cannot reliably do today. The classifier is a slot; the platform is the contribution.
 
 ## Build

@@ -75,6 +75,8 @@ At runtime:
 
 Honest accounting on this model lives in the `README` ("Honest framing on the classifier" section). It's a pipeline-validation baseline reporting AUC 0.71 on a held-out split of the same dataset, not a clinical claim. The architecture is what we're submitting; the classifier is a slot that will be replaced with a properly out-of-distribution clinical-cohort fine-tune.
 
+Concrete next step on the data side: extend the training mix with additional public VIA corpora, starting with Cervix93 as an initial out-of-distribution cross-validation set, then IARC-atlas-aligned cohorts as they become available. The runtime pipeline (TFLite + XNNPack delegate, 16x16 saliency output, confidence gating) stays identical; only the weights change. The hand-off contract to Gemma 4 (label + confidence + heatmap focus phrase) is also unchanged, so the four reasoning surfaces above continue to work without modification when the classifier is upgraded.
+
 ## Gemma 4 integration
 
 ### The runtime
