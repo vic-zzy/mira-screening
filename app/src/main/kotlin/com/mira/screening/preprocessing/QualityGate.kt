@@ -70,17 +70,26 @@ object QualityGate {
         val somewhatBlurry = sharpness < SHARPNESS_GOOD
         val tooMuchGlare = glareFraction > GLARE_MAX_FRACTION
 
+        // Low lighting is a warning, not a gate. Many low-resource clinics
+        // do not have ideal lighting, and gating capture on luminance would
+        // disadvantage exactly the users Mira is built to serve. The
+        // classifier already routes uncertain results to Inconclusive, so
+        // the worst case of capturing in poor light is a "please try again"
+        // result rather than a wrong confident answer. tooBright, tooBlurry,
+        // and tooMuchGlare still gate because each makes the frame
+        // physically unusable for inference (white-clipped, motion-smeared,
+        // or speculum-mirrored pixels lack the signal the model needs).
         val quality = when {
-            tooDark || tooBright || tooBlurry || tooMuchGlare -> Quality.POOR
-            somewhatBlurry -> Quality.LOW
+            tooBright || tooBlurry || tooMuchGlare -> Quality.POOR
+            tooDark || somewhatBlurry -> Quality.LOW
             else -> Quality.GOOD
         }
 
         val message = when {
-            tooDark -> "Too dark, turn on the light"
+            tooBlurry -> "Hold still, image is blurry"
             tooBright -> "Too bright, adjust position"
             tooMuchGlare -> "Too much glare, reposition"
-            tooBlurry -> "Hold still, image is blurry"
+            tooDark -> "Low light, capture allowed but result may be inconclusive"
             somewhatBlurry -> "Hold steady, adjusting"
             else -> "Image quality looks good"
         }
