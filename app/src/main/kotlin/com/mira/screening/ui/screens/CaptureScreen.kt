@@ -222,7 +222,13 @@ private fun CaptureContent(
             QualityChip(report = quality)
             Spacer(Modifier.height(20.dp))
             Shutter(
-                enabled = quality?.quality != Quality.POOR && captureState == CaptureState.IDLE,
+                // DEMO: quality gating temporarily relaxed so the webcam pass-through
+                // demo path can capture regardless of blur/glare/over-brightness.
+                // The QualityChip still surfaces the live quality message so the
+                // user gets the same feedback. Restore production behaviour by
+                // re-adding `quality?.quality != Quality.POOR &&` before
+                // captureState == CaptureState.IDLE.
+                enabled = captureState == CaptureState.IDLE,
                 onClick = {
                     if (captureState != CaptureState.IDLE) return@Shutter
                     captureState = CaptureState.CAPTURING
