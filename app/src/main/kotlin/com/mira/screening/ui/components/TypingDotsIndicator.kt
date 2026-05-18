@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
  *
  * Each dot runs the same fade-and-scale loop but with a staggered start
  * offset, so they animate in sequence rather than in unison. The result reads
- * the way iMessage, WhatsApp, and ChatGPT show a typing indicator, and gives
+ * the way iMessage, WhatsApp, and Messenger show a typing indicator, and gives
  * the eye continuous motion to look at while Gemma 4 warms up the first
  * tokens of a response rather than a static, ambiguous spinner.
  */

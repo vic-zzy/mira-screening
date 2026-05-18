@@ -209,7 +209,7 @@ private fun PatientIdField(value: String, onValueChange: (String) -> Unit) {
  * Step cards have two visual states. Idle: surface-variant fill with subtle
  * border. Done: full primary-teal fill with white content, strong visual
  * confirmation that the step is complete. Both states preserve the same
- * geometry (uniform layout) per Pere's preference, but the strong fill is
+ * geometry (uniform layout) for visual consistency, but the strong fill is
  * what reads as "selected" for the busy CHW.
  */
 @Composable

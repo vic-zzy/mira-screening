@@ -34,6 +34,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,6 +52,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlinx.coroutines.launch
 
 @Composable
 fun HistoryScreen(
@@ -59,6 +61,8 @@ fun HistoryScreen(
 ) {
     val context = LocalContext.current
     val repo = remember { ScreeningRepository(context) }
+    // Used to launch suspend repo.deleteAll from the clear-all dialog onClick.
+    val coroutineScope = rememberCoroutineScope()
     var records by remember { mutableStateOf(emptyList<ScreeningRecord>()) }
     var showClearAll by remember { mutableStateOf(false) }
 
@@ -149,8 +153,11 @@ fun HistoryScreen(
                 TextButton(
                     onClick = {
                         showClearAll = false
-                        repo.deleteAll()
+                        // Optimistically clear the UI list; the actual disk
+                        // wipe (suspend, runs on Dispatchers.IO inside the
+                        // repository) completes in the background.
                         records = emptyList()
+                        coroutineScope.launch { repo.deleteAll() }
                     }
                 ) {
                     Text(

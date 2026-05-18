@@ -175,11 +175,6 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
             currentJob = scope.launch {
                 val builder = StringBuilder()
                 try {
-                    // Prefer the persistent chat session so Gemma sees the
-                    // whole conversation. Fall back to a one-shot stateless
-                    // generateStream if the session has not been created
-                    // yet (e.g. the user fires a chip the very first frame
-                    // after Ready flips, before the LaunchedEffect runs).
                     val session = chatSession
                     val stream = if (session != null) {
                         session.sendStream(
@@ -192,9 +187,6 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
                         )
                     }
                     stream.catch { t ->
-                        // Catches Flow-side errors emitted during collection.
-                        // Surfaced as the assistant message so the user sees
-                        // it instead of a silent failure.
                         builder.clear()
                         builder.append(
                             "Sorry, I could not generate an answer right now. " +
@@ -206,8 +198,6 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
                             text = builder.toString()
                         )
                     }
-                    // Final flush in case the catch block populated the
-                    // builder without an emit triggering a recomposition.
                     messages[placeholderIndex] = assistantMessage.copy(
                         text = builder.toString().ifEmpty { assistantMessage.text }
                     )
@@ -226,10 +216,6 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
                     }
                     throw ce
                 } catch (t: Throwable) {
-                    // Defensive catch: any error that escapes the Flow's own
-                    // .catch (e.g. an upstream synchronous throw before the
-                    // Flow even exists) lands here and becomes a visible
-                    // assistant message rather than crashing the activity.
                     messages[placeholderIndex] = assistantMessage.copy(
                         text = "Sorry, I could not generate an answer right now. " +
                             "(${t.message.orEmpty()})"
@@ -292,9 +278,11 @@ fun CHWAssistantScreen(onBack: () -> Unit) {
                 if (messages.size == 1 && messages.first().role == Role.Assistant) {
                     item {
                         SuggestedQuestionChips(
-                            questions = SUGGESTED_QUESTIONS,
+                            chips = SUGGESTED_QUESTIONS,
                             enabled = isReady && !isGenerating,
-                            onChipClick = sendQuestion
+                            onChipClick = { question ->
+                                sendQuestion(question)
+                            }
                         )
                     }
                 }
@@ -553,7 +541,7 @@ private val SUGGESTED_QUESTIONS = listOf(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun SuggestedQuestionChips(
-    questions: List<String>,
+    chips: List<String>,
     enabled: Boolean,
     onChipClick: (String) -> Unit
 ) {
@@ -573,7 +561,7 @@ private fun SuggestedQuestionChips(
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            questions.forEach { question ->
+            chips.forEach { question ->
                 SuggestionChip(
                     onClick = { onChipClick(question) },
                     enabled = enabled,

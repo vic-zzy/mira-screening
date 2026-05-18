@@ -42,6 +42,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,6 +61,9 @@ import com.mira.screening.ui.theme.miraStatus
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun HistoryDetailScreen(
@@ -69,6 +73,8 @@ fun HistoryDetailScreen(
 ) {
     val context = LocalContext.current
     val repo = remember { ScreeningRepository(context) }
+    // Scope used to launch suspend repo.delete from the confirm-dialog onClick.
+    val coroutineScope = rememberCoroutineScope()
     var record by remember { mutableStateOf<ScreeningRecord?>(null) }
     var bitmap by remember { mutableStateOf<android.graphics.Bitmap?>(null) }
     var showConfirm by remember { mutableStateOf(false) }
@@ -76,7 +82,10 @@ fun HistoryDetailScreen(
     LaunchedEffect(recordId) {
         val r = repo.list().firstOrNull { it.id == recordId }
         record = r
-        bitmap = r?.imagePath?.let { BitmapFactory.decodeFile(it) }
+        // BitmapFactory.decodeFile hits the disk, do it off Main.
+        bitmap = r?.imagePath?.let { path ->
+            withContext(Dispatchers.IO) { BitmapFactory.decodeFile(path) }
+        }
     }
 
     // TTS plumbing for the "Play" button inside the saved Mira-explains card.
@@ -132,10 +141,14 @@ fun HistoryDetailScreen(
             ?.let { languageNameToLocale(it) }
             ?: Locale.getDefault()
         tts.language = targetLocale
-        val voices = tts.voices
-        val best = voices?.filter { v ->
-            v.locale.language == targetLocale.language && !v.isNetworkConnectionRequired
-        }?.maxByOrNull { it.quality }
+        // tts.voices enumeration is slow (lazy index of installed voice
+        // packs) and was running on Main. Move it to Default; hop back to
+        // Main only to apply the chosen voice. See ResultScreen for context.
+        val best = withContext(Dispatchers.Default) {
+            tts.voices?.filter { v ->
+                v.locale.language == targetLocale.language && !v.isNetworkConnectionRequired
+            }?.maxByOrNull { it.quality }
+        }
         if (best != null) {
             tts.voice = best
         }
@@ -311,7 +324,12 @@ fun HistoryDetailScreen(
                 TextButton(
                     onClick = {
                         showConfirm = false
-                        repo.delete(recordId)
+                        // repo.delete is suspend; launch it on the composition
+                        // scope so the Main thread is not blocked on disk IO.
+                        // Navigate away immediately, the delete completes in
+                        // the background and the history list re-reads from
+                        // disk on next open.
+                        coroutineScope.launch { repo.delete(recordId) }
                         onDeleted()
                     }
                 ) {

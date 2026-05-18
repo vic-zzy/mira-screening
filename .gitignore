@@ -47,3 +47,15 @@ opencv-android-sdk/
 app/src/main/assets/gemma4.litertlm
 app/src/main/assets/*.litertlm
 app/src/main/assets/*.task
+
+# AI assistant scratch / config (never commit)
+.claude/
+.cursor/
+.ai/
+CLAUDE.md
+AGENTS.md
+GEMINI.md
+.cursorrules
+.github/copilot-instructions.md
+*.bak
+*.orig

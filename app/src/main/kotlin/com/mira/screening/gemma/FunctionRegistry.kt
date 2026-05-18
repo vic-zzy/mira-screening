@@ -163,9 +163,9 @@ object FunctionRegistry {
 
     /**
      * Build a JSON schema description of all available functions, to be
-     * embedded in Gemma's system instruction. The format follows the OpenAI
-     * /Anthropic tool-use convention which Gemma 4 has been trained to
-     * recognize.
+     * embedded in Gemma's system instruction. The format follows the
+     * standard JSON-schema tool-use convention which Gemma 4 has been
+     * trained to recognize.
      */
     fun formatAsJsonSchema(): String {
         val arr = JSONArray()

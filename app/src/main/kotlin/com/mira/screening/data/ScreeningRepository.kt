@@ -3,6 +3,8 @@ package com.mira.screening.data
 import android.content.Context
 import android.graphics.Bitmap
 import com.mira.screening.inference.ViaClassification
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -10,33 +12,56 @@ import java.io.FileOutputStream
 
 // File-backed persistence for V1: JSON manifest + JPEG-on-disk for images.
 // Room migration lands when we need indexed queries / reactive flows.
+//
+// All public IO entry points are suspend + withContext(Dispatchers.IO) so the
+// composition / main thread never blocks on JSON readText/writeText or JPEG
+// compression. Calling these from a non-coroutine context (button onClick) is
+// a build error, which catches Main-thread regressions at compile time.
 class ScreeningRepository(private val context: Context) {
     private val recordsFile: File get() = File(context.filesDir, "records.json")
     private val imagesDir: File
         get() = File(context.filesDir, "images").also { it.mkdirs() }
 
-    fun save(
+    suspend fun save(
         record: ScreeningRecord,
         bitmap: Bitmap?,
         persistImage: Boolean
-    ): ScreeningRecord {
-        val imagePath = if (persistImage && bitmap != null) {
+    ): ScreeningRecord = withContext(Dispatchers.IO) {
+        // Only write a new JPEG (and overwrite imagePath) when this call is
+        // actually persisting a fresh image. Update-style calls from
+        // ResultScreen (narration save, user override) pass persistImage=false
+        // with bitmap=null, in which case we MUST preserve the imagePath that
+        // was set on the original insert, otherwise the History detail view
+        // loses its image because record.imagePath gets nulled out on every
+        // subsequent update.
+        val updated = if (persistImage && bitmap != null) {
             val file = File(imagesDir, "${record.id}.jpg")
             FileOutputStream(file).use { os ->
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 88, os)
             }
-            file.absolutePath
-        } else null
+            record.copy(imagePath = file.absolutePath)
+        } else {
+            // Preserve whatever imagePath the caller already had on the record.
+            // If they passed null deliberately (e.g. saveImages pref was off
+            // at insert time), that null is what gets persisted.
+            record
+        }
 
-        val updated = record.copy(imagePath = imagePath)
-        val current = list().toMutableList()
+        val current = listBlocking().toMutableList()
         current.removeAll { it.id == updated.id }
         current += updated
         write(current)
-        return updated
+        updated
     }
 
-    fun list(): List<ScreeningRecord> {
+    suspend fun list(): List<ScreeningRecord> = withContext(Dispatchers.IO) {
+        listBlocking()
+    }
+
+    // Used internally by save/delete/deleteAll, which are already inside a
+    // withContext(IO) block. Extracted so we don't pay the dispatcher dance
+    // twice for the read-then-write sequence those methods perform.
+    private fun listBlocking(): List<ScreeningRecord> {
         if (!recordsFile.exists()) return emptyList()
         return try {
             val arr = JSONArray(recordsFile.readText())
@@ -46,8 +71,8 @@ class ScreeningRepository(private val context: Context) {
         }
     }
 
-    fun delete(id: String) {
-        val all = list()
+    suspend fun delete(id: String) = withContext(Dispatchers.IO) {
+        val all = listBlocking()
         all.firstOrNull { it.id == id }?.imagePath?.let {
             runCatching { File(it).delete() }
         }
@@ -58,8 +83,8 @@ class ScreeningRepository(private val context: Context) {
      * Wipe all records and any saved images. Used by the "Clear all" action in
      * History, destructive, gated behind a confirm dialog at the call site.
      */
-    fun deleteAll() {
-        list().forEach { rec ->
+    suspend fun deleteAll() = withContext(Dispatchers.IO) {
+        listBlocking().forEach { rec ->
             rec.imagePath?.let { runCatching { File(it).delete() } }
         }
         write(emptyList())

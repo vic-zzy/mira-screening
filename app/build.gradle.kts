@@ -12,7 +12,7 @@ android {
         applicationId = "com.mira.screening"
         minSdk = 24
         targetSdk = 35
-        versionCode = 4
+        versionCode = 9
         versionName = "0.1.3-alpha"
     }
 

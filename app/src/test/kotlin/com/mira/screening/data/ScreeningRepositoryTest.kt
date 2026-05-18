@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import com.mira.screening.inference.ViaClassification
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,12 +39,12 @@ class ScreeningRepositoryTest {
         )
 
     @Test
-    fun list_isEmpty_initially() {
+    fun list_isEmpty_initially() = runBlocking {
         assertThat(repo.list()).isEmpty()
     }
 
     @Test
-    fun saveAndList_returnsRecord() {
+    fun saveAndList_returnsRecord() = runBlocking {
         repo.save(makeRecord("a"), bitmap = null, persistImage = false)
         val list = repo.list()
         assertThat(list).hasSize(1)
@@ -52,7 +53,7 @@ class ScreeningRepositoryTest {
     }
 
     @Test
-    fun save_persistsImage_whenRequested() {
+    fun save_persistsImage_whenRequested() = runBlocking {
         val bmp = Bitmap.createBitmap(8, 8, Bitmap.Config.ARGB_8888)
         val saved = repo.save(makeRecord("b"), bmp, persistImage = true)
         assertThat(saved.imagePath).isNotNull()
@@ -60,14 +61,14 @@ class ScreeningRepositoryTest {
     }
 
     @Test
-    fun save_skipsImage_whenNotRequested() {
+    fun save_skipsImage_whenNotRequested() = runBlocking {
         val bmp = Bitmap.createBitmap(8, 8, Bitmap.Config.ARGB_8888)
         val saved = repo.save(makeRecord("c"), bmp, persistImage = false)
         assertThat(saved.imagePath).isNull()
     }
 
     @Test
-    fun save_overwritesExistingId() {
+    fun save_overwritesExistingId() = runBlocking {
         repo.save(makeRecord("a", ViaClassification.NEGATIVE), null, false)
         repo.save(makeRecord("a", ViaClassification.POSITIVE), null, false)
         val list = repo.list()
@@ -76,7 +77,7 @@ class ScreeningRepositoryTest {
     }
 
     @Test
-    fun delete_removesRecord() {
+    fun delete_removesRecord() = runBlocking {
         repo.save(makeRecord("a"), null, false)
         repo.save(makeRecord("b"), null, false)
         repo.delete("a")
@@ -84,7 +85,7 @@ class ScreeningRepositoryTest {
     }
 
     @Test
-    fun delete_alsoRemovesImageFile() {
+    fun delete_alsoRemovesImageFile() = runBlocking {
         val bmp = Bitmap.createBitmap(8, 8, Bitmap.Config.ARGB_8888)
         val saved = repo.save(makeRecord("a"), bmp, persistImage = true)
         val imagePath = saved.imagePath!!
@@ -94,14 +95,14 @@ class ScreeningRepositoryTest {
     }
 
     @Test
-    fun roundtrip_acrossInstances() {
+    fun roundtrip_acrossInstances() = runBlocking {
         repo.save(makeRecord("a"), null, false)
         val again = ScreeningRepository(context)
         assertThat(again.list().map { it.id }).containsExactly("a")
     }
 
     @Test
-    fun userOverride_roundtripsCorrectly() {
+    fun userOverride_roundtripsCorrectly() = runBlocking {
         val r = makeRecord("a").copy(userOverride = ViaClassification.POSITIVE)
         repo.save(r, null, false)
         val loaded = repo.list().first()

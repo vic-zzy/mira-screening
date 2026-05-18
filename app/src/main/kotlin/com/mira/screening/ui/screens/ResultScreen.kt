@@ -49,6 +49,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,6 +69,9 @@ import com.mira.screening.ui.theme.miraStatus
 import com.mira.screening.ui.util.heatmapToBitmap
 import java.util.Locale
 import kotlin.math.sqrt
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun ResultScreen(
@@ -97,6 +101,11 @@ fun ResultScreen(
 
     val context = LocalContext.current
     val repo = remember { ScreeningRepository(context) }
+    // Scope tied to the composition: used to launch the suspend repo.save /
+    // repo.list calls from button-onClick callbacks that don't have their own
+    // coroutine context. The save itself runs on Dispatchers.IO inside the
+    // repository, so this scope's default dispatcher (Main) is fine.
+    val coroutineScope = rememberCoroutineScope()
     var ttsReady by remember { mutableStateOf(false) }
     // True only after the voice-selection LaunchedEffect has finished
     // configuring tts.language and tts.voice. Without this gate, the play
@@ -166,12 +175,20 @@ fun ResultScreen(
         if (!ttsReady) return@LaunchedEffect
         val locale = Locale.getDefault()
         tts.language = locale
-        val voices = tts.voices
-        val best = voices
-            ?.filter { v ->
-                v.locale.language == locale.language && !v.isNetworkConnectionRequired
-            }
-            ?.maxByOrNull { it.quality }
+        // Enumerating tts.voices is slow on some engines (1-3 s on Google TTS
+        // the first time it's queried, because the engine lazily indexes
+        // installed voice packs). Doing it on the Main thread inside this
+        // LaunchedEffect was triggering the "Mira stopped responding" ANR
+        // dialog on the result screen. Move the enumeration + scoring to
+        // Dispatchers.Default and hop back to Main only to apply the chosen
+        // voice and prewarm. tts.speak itself is non-blocking.
+        val best = withContext(Dispatchers.Default) {
+            tts.voices
+                ?.filter { v ->
+                    v.locale.language == locale.language && !v.isNetworkConnectionRequired
+                }
+                ?.maxByOrNull { it.quality }
+        }
         if (best != null) {
             tts.voice = best
             android.util.Log.i(
@@ -377,16 +394,24 @@ fun ResultScreen(
                         // not a fresh insert; we re-use save() with the
                         // bitmap=null / persistImage=false pattern that
                         // already handles "update existing".
-                        val existing = repo.list().firstOrNull { it.id == captureId }
-                        if (existing != null) {
-                            repo.save(
-                                existing.copy(
-                                    narration = text,
-                                    narrationLanguage = language
-                                ),
-                                bitmap = null,
-                                persistImage = false
-                            )
+                        //
+                        // onNarrationReady is a plain (non-suspend) lambda
+                        // even though its caller is in a coroutine, so we
+                        // launch on the composition scope to invoke the
+                        // suspend repo methods. The save itself runs on
+                        // Dispatchers.IO inside the repository.
+                        coroutineScope.launch {
+                            val existing = repo.list().firstOrNull { it.id == captureId }
+                            if (existing != null) {
+                                repo.save(
+                                    existing.copy(
+                                        narration = text,
+                                        narrationLanguage = language
+                                    ),
+                                    bitmap = null,
+                                    persistImage = false
+                                )
+                            }
                         }
                     },
                     onPlayPressed = { textToSpeak ->
@@ -447,9 +472,14 @@ fun ResultScreen(
             onSelect = { picked ->
                 override = picked
                 showOverrideDialog = false
-                val existing = repo.list().firstOrNull { it.id == captureId }
-                if (existing != null) {
-                    repo.save(existing.copy(userOverride = picked), bitmap = null, persistImage = false)
+                // Persist the override off the Main thread. repo.list / save
+                // are suspend + Dispatchers.IO internally; we just need a
+                // coroutine to call them from.
+                coroutineScope.launch {
+                    val existing = repo.list().firstOrNull { it.id == captureId }
+                    if (existing != null) {
+                        repo.save(existing.copy(userOverride = picked), bitmap = null, persistImage = false)
+                    }
                 }
             },
             onDismiss = { showOverrideDialog = false }
